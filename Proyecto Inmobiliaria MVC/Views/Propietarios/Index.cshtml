@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    List<Propietario> propietarios = ViewData[nameof(Propietario)] as List<Propietario>;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenido</h1>
+</div>
+
+<ul>
+    @foreach (var item in propietarios)
+    {
+    <li>@item.Id, @item.Nombre, @item.Email, @item.Dni, @item.Telefono</li>
+    }
+</ul>
