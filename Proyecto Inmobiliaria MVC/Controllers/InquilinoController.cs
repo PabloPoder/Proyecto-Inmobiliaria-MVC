@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Proyecto_Inmobiliaria_MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,41 +7,30 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
-    public class PropietariosController : Controller
+    public class InquilinoController : Controller
     {
-
-        private RepositorioPropietario repositorioPropietario;
-
-
-        // GET: PersonasController
+        // GET: InquilinoController
         public ActionResult Index()
         {
-            repositorioPropietario = new RepositorioPropietario();
-
-            var lista = repositorioPropietario.ObtenerTodos();
-            ViewData[nameof(Propietario)] = lista;
-
             return View();
         }
 
-        // GET: PersonasController/Details/5
-        public ActionResult Detalles(int id)
+        // GET: InquilinoController/Details/5
+        public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: PersonasController/Create
-        [HttpPost]
-        public ActionResult Crear(Propietario propietario)
+        // GET: InquilinoController/Create
+        public ActionResult Create()
         {
-            repositorioPropietario.Alta(propietario);
-            return RedirectToAction(nameof(Index));
+            return View();
         }
 
-        // POST: PersonasController/Create
+        // POST: InquilinoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Crear(IFormCollection collection)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
@@ -54,17 +42,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-        // GET: PersonasController/Edit/5
-        public ActionResult Editar(Propietario propietario)
+        // GET: InquilinoController/Edit/5
+        public ActionResult Edit(int id)
         {
-            repositorioPropietario.Modificacion(propietario);
-            return RedirectToAction(nameof(Index));
+            return View();
         }
 
-        // POST: PersonasController/Edit/5
+        // POST: InquilinoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Editar(int id, IFormCollection collection)
+        public ActionResult Edit(int id, IFormCollection collection)
         {
             try
             {
@@ -76,13 +63,13 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-        // GET: PersonasController/Delete/5
+        // GET: InquilinoController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: PersonasController/Delete/5
+        // POST: InquilinoController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

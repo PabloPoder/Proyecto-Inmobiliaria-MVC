@@ -11,5 +11,11 @@
     @foreach (var item in propietarios)
     {
     <li>@item.Id, @item.Nombre, @item.Email, @item.Dni, @item.Telefono</li>
+
+    <div>
+        @Html.ActionLink("Editar", "Editar", new { }) |
+        <a asp-action="Index">Volver a la lista</a>
+    </div>
+
     }
 </ul>
