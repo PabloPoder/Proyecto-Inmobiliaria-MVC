@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Proyecto_Inmobiliaria_MVC.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +12,15 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
     public class InquilinoController : Controller
     {
+        protected readonly IConfiguration configuration;
+        RepositorioInquilino repositorioInquilino;
+
+        public InquilinoController(RepositorioInquilino repositorioInquilino, IConfiguration configuration)
+        {
+            this.repositorioInquilino = new RepositorioInquilino(configuration);
+            this.configuration = configuration;
+        }
+
         // GET: InquilinoController
         public ActionResult Index()
         {
@@ -36,9 +48,10 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (SqlException ex) 
             {
-                return View();
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -66,7 +79,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: InquilinoController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            try
+            {
+                repositorioInquilino.Baja(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: InquilinoController/Delete/5
@@ -76,11 +98,13 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
+                repositorioInquilino.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (SqlException ex)
             {
-                return View();
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
     }

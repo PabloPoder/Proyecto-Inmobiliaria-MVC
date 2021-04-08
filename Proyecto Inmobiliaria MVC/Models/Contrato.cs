@@ -6,19 +6,17 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Models
 {
-    public class Inquilino
+    public class Contrato
     {
         [Display(Name = "Código")]
         public int Id { get; set; }
         [Required]
-        public string Nombre { get; set; }
+        public Inquilino Inquilino { get; set; }
         [Required]
-        public string Apellido { get; set; }
+        public Inmueble Inmueble { get; set; }
         [Required]
-        public string Dni{ get; set; }
+        public DateTime FechaDesde { get; set; }
         [Required]
-        public string Telefono { get; set; }
-        [Required, EmailAddress]
-        public string Email { get; set; }
+        public DateTime FechaHasta { get; set; }
     }
 }

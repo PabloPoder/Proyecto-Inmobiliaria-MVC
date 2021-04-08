@@ -13,7 +13,9 @@
     <li>@item.Id, @item.Nombre, @item.Email, @item.Dni, @item.Telefono</li>
 
     <div>
-        @Html.ActionLink("Editar", "Editar", new { }) |
+        @Html.ActionLink("Editar", "Edit", new { Id = item.Id }) |
+        @Html.ActionLink("Detalles", "Details", new { Id = item.Id }) |
+        @Html.ActionLink("Borrar", "Delete", new { Id = item.Id })
         <a asp-action="Index">Volver a la lista</a>
     </div>
 

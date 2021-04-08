@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,9 +8,12 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Models
 {
-    public class RepositorioInquilino
+    public class RepositorioInquilino : RepositorioBase
     {
-        private readonly string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=BDInmoPoder;Trusted_Connection=True;MultipleActiveResultSets=true";
+        public RepositorioInquilino(IConfiguration configuration) : base(configuration)
+        {
+
+        }
 
         public int Alta(Inquilino inquilino)
         {

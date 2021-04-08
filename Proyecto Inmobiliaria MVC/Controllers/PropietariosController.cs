@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Proyecto_Inmobiliaria_MVC.Models;
 using System;
 using System.Collections.Generic;
@@ -10,30 +11,38 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
     public class PropietariosController : Controller
     {
+        protected readonly IConfiguration configuration;
+        RepositorioPropietario repositorioPropietario;
 
-        private RepositorioPropietario repositorioPropietario;
-
+        public PropietariosController(RepositorioPropietario repositorioPropietario, IConfiguration configuration)
+        {
+            this.repositorioPropietario = new RepositorioPropietario(configuration);
+            this.configuration = configuration;
+        }
 
         // GET: PersonasController
         public ActionResult Index()
         {
-            repositorioPropietario = new RepositorioPropietario();
-
-            var lista = repositorioPropietario.ObtenerTodos();
-            ViewData[nameof(Propietario)] = lista;
-
-            return View();
+            try
+            {
+                var lista = repositorioPropietario.ObtenerTodos();
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         // GET: PersonasController/Details/5
-        public ActionResult Detalles(int id)
+        public ActionResult Details(int id)
         {
             return View();
         }
 
         // GET: PersonasController/Create
         [HttpPost]
-        public ActionResult Crear(Propietario propietario)
+        public ActionResult Crear(Propietario propietario) 
         {
             repositorioPropietario.Alta(propietario);
             return RedirectToAction(nameof(Index));
@@ -42,7 +51,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // POST: PersonasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Crear(IFormCollection collection)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
@@ -55,7 +64,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         }
 
         // GET: PersonasController/Edit/5
-        public ActionResult Editar(Propietario propietario)
+        public ActionResult Edit(Propietario propietario)
         {
             repositorioPropietario.Modificacion(propietario);
             return RedirectToAction(nameof(Index));
@@ -64,7 +73,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // POST: PersonasController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Editar(int id, IFormCollection collection)
+        public ActionResult Edit(int id, IFormCollection collection)
         {
             try
             {
