@@ -36,10 +36,12 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
                     connection.Open();
 
-                    res = Convert.ToInt32(command.ExecuteScalar()); // devuelve la primer columna de la primer fila de resultados del query (id)
-                    inquilino.Id = res;
+                    res = command.ExecuteNonQuery();
+                    command.CommandText = "SELECT SCOPE_IDENTITY()";
+                    inquilino.Id = (int)command.ExecuteScalar();
 
                     connection.Close();
+
                 }
             }
             return res;
@@ -121,6 +123,39 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 }
             }
             return res;
+        }
+
+        public Inquilino ObtenerPorId(int id)
+        {
+            var inquilino = new Inquilino();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT Id, Nombre, Apellido, Dni, Telefono, Email FROM Inquilinos WHERE Id = @id;";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        inquilino = new Inquilino()
+                        {
+                            Id = reader.GetInt32(0),
+                            Nombre = reader.GetString(1),
+                            Apellido = reader.GetString(2),
+                            Dni = reader.GetString(3),
+                            Telefono = reader.GetString(4),
+                            Email = reader.GetString(5),
+                        };
+                    }
+                }
+                connection.Close();
+            }
+            return inquilino;
         }
     }
 }

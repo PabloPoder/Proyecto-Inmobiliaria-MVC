@@ -26,7 +26,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             try
             {
                 var lista = repositorioContrato.ObtenerTodos();
-                ViewData[nameof(Propietario)] = lista;
+                ViewData[nameof(Contrato)] = lista;
                 return View(lista);
             }
             catch (Exception ex)

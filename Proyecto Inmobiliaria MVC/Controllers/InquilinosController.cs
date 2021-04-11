@@ -24,7 +24,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: InquilinoController
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+                var lista = repositorioInquilino.ObtenerTodos();
+                ViewData[nameof(Inquilino)] = lista;
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         // GET: InquilinoController/Details/5
@@ -42,32 +51,47 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // POST: InquilinoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Inquilino inquilino)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    repositorioInquilino.Alta(inquilino);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+                    return View(inquilino);
+                }
+                
             }
             catch (SqlException ex) 
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                ViewBag.Error = "Ocurrio un error " + ex.Message;
+                return View(inquilino);
+
             }
         }
 
         // GET: InquilinoController/Edit/5
         public ActionResult Edit(int id)
         {
+            var contrato = repositorioInquilino.ObtenerPorId(id);
             return View();
         }
 
         // POST: InquilinoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Inquilino inquilino)
         {
             try
             {
+                inquilino.Id = id;
+                repositorioInquilino.Modificacion(inquilino);
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -98,7 +122,6 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                repositorioInquilino.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (SqlException ex)
