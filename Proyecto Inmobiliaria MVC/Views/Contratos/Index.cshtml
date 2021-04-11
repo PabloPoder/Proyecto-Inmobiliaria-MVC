@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Proyecto_Inmobiliaria_MVC.Models.Propietario>
+﻿@model IEnumerable<Proyecto_Inmobiliaria_MVC.Models.Contrato>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Contratos";
 }
 
-<h1>Propietarios</h1>
+<h1>Contratos</h1>
 
 <p>
     <a asp-action="Create">Crear nuevo</a>
@@ -16,22 +16,16 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.FechaDesde)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Apellido)
+                @Html.DisplayNameFor(model => model.FechaHasta)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dni)
+                @Html.DisplayNameFor(model => model.InmuebleId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Clave)
+                @Html.DisplayNameFor(model => model.InquilinoId)
             </th>
             <th></th>
         </tr>
@@ -43,22 +37,16 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
+                @Html.DisplayFor(modelItem => item.FechaDesde)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Apellido)
+                @Html.DisplayFor(modelItem => item.FechaHasta)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Dni)
+                @Html.DisplayFor(modelItem => item.InmuebleId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Clave)
+                @Html.DisplayFor(modelItem => item.InquilinoId)
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { Id = item.Id }) |

@@ -135,7 +135,49 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return res;
         }
 
-               
-                            
+        public Inmueble ObtenerPorId(int id)
+        {
+            var contrato = new Inmueble();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT id, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId" +
+                    "propietario.Nombre, propietario.Apellido" +
+                    $" FROM Inmuebles inmuebles INNER JOIN Propietarios propietarios ON inmuebles.PropietarioId = propietario.id " +
+                    $"WHERE inmuebles.id = @id;";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        Inmueble inmueble = new Inmueble
+                        {
+                            Id = reader.GetInt32(0),
+                            Direccion = reader.GetString(1),
+                            Ambientes = reader.GetInt32(2),
+                            Superficie = reader.GetInt32(3),
+                            Latitud = reader.GetDecimal(4),
+                            Longitud = reader.GetDecimal(5),
+                            PropietarioId = reader.GetInt32(6),
+                            Propietario = new Propietario
+                            {
+                                Id = reader.GetInt32(6),
+                                Nombre = reader.GetString(7),
+                                Apellido = reader.GetString(8),
+                            }
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return contrato;
+        }
+
+
     }
 }

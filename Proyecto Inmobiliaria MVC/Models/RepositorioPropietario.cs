@@ -125,5 +125,40 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             }
             return res;
         }
+
+        public Propietario ObtenerPorId(int id)
+        {
+            var propietario = new Propietario();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT Id, Nombre, Apellido, Dni, Telefono, Email, Clave " +
+                    $" FROM Propietarios WHERE Id = @id;";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        propietario = new Propietario()
+                        {
+                            Id = reader.GetInt32(0),
+                            Nombre = reader.GetString(1),
+                            Apellido = reader.GetString(2),
+                            Dni = reader.GetString(3),
+                            Telefono = reader.GetString(4),
+                            Email = reader.GetString(5),
+                            Clave = reader.GetString(6),
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return propietario;
+        }
     }
 }

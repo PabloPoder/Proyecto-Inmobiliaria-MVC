@@ -9,23 +9,23 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
-    public class PropietariosController : Controller
+    public class ContratosController : Controller
     {
         protected readonly IConfiguration configuration;
-        RepositorioPropietario repositorioPropietario;
+        RepositorioContrato repositorioContrato;
 
-        public PropietariosController(IConfiguration configuration)
+        public ContratosController(IConfiguration configuration)
         {
-            this.repositorioPropietario = new RepositorioPropietario(configuration);
+            this.repositorioContrato = new RepositorioContrato(configuration);
             this.configuration = configuration;
         }
 
-        // GET: PersonasController
+        // GET: ContratosController
         public ActionResult Index()
         {
             try
             {
-                var lista = repositorioPropietario.ObtenerTodos();
+                var lista = repositorioContrato.ObtenerTodos();
                 ViewData[nameof(Propietario)] = lista;
                 return View(lista);
             }
@@ -35,27 +35,26 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-        // GET: PersonasController/Details/5
+        // GET: ContratosController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: PersonasController/Create
-        [HttpPost]
-        public ActionResult Create() 
-        {
+        // GET: ContratosController/Create
+        public ActionResult Create()
+        { 
             return View();
         }
 
-        // POST: PersonasController/Create
+        // POST: ContratosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Propietario propietario)
+        public ActionResult Create(Contrato contrato)
         {
             try
             {
-                repositorioPropietario.Alta(propietario);
+                repositorioContrato.Alta(contrato);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -64,22 +63,22 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-        // GET: PersonasController/Edit/5
+        // GET: ContratosController/Edit/5
         public ActionResult Edit(int id)
         {
-            var contrato = repositorioPropietario.ObtenerPorId(id);
+            var contrato = repositorioContrato.ObtenerPorId(id);
             return View(contrato);
         }
 
-        // POST: PersonasController/Edit/5
+        // POST: ContratosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Propietario propietario)
+        public ActionResult Edit(int id, Contrato contrato)
         {
             try
             {
-                propietario.Id = id;
-                repositorioPropietario.Modificacion(propietario);
+                contrato.Id = id;
+                repositorioContrato.Modificacion(contrato);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -89,14 +88,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-        // GET: PersonasController/Delete/5
+        // GET: ContratosController/Delete/5
         public ActionResult Delete(int id)
         {
-            repositorioPropietario.Baja(id);
+            repositorioContrato.Baja(id);
             return View();
         }
 
-        // POST: PersonasController/Delete/5
+        // POST: ContratosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

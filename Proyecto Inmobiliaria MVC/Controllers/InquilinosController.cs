@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
-    public class InquilinoController : Controller
+    public class InquilinosController : Controller
     {
         protected readonly IConfiguration configuration;
         RepositorioInquilino repositorioInquilino;
 
-        public InquilinoController(RepositorioInquilino repositorioInquilino, IConfiguration configuration)
+        public InquilinosController(IConfiguration configuration)
         {
             this.repositorioInquilino = new RepositorioInquilino(configuration);
             this.configuration = configuration;
