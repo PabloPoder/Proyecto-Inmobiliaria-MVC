@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Proyecto_Inmobiliaria_MVC.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -57,9 +58,10 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 repositorioContrato.Alta(contrato);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (SqlException ex)
             {
-                return View();
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -82,9 +84,10 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (SqlException ex)
             {
-                return View();
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
 

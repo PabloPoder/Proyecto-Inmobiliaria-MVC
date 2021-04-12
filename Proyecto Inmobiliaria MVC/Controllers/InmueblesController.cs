@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
-    public class InquilinosController : Controller
+    public class InmueblesController : Controller
     {
         protected readonly IConfiguration configuration;
-        RepositorioInquilino repositorioInquilino;
+        RepositorioInmueble repositorioInmueble;
 
-        public InquilinosController(IConfiguration configuration)
+        public InmueblesController(IConfiguration configuration)
         {
-            this.repositorioInquilino = new RepositorioInquilino(configuration);
+            this.repositorioInmueble = new RepositorioInmueble(configuration);
             this.configuration = configuration;
         }
 
@@ -26,13 +26,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                var lista = repositorioInquilino.ObtenerTodos();
-                ViewData[nameof(Inquilino)] = lista;
+                var lista = repositorioInmueble.ObtenerTodos();
+                ViewData[nameof(Inmueble)] = lista;
                 return View(lista);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                throw;
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -51,46 +52,45 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // POST: InquilinoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Inquilino inquilino)
+        public ActionResult Create(Inmueble inmueble)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    repositorioInquilino.Alta(inquilino);
+                    repositorioInmueble.Alta(inmueble);
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-                    return View(inquilino);
+                    ViewBag.Inquilinos = repositorioInmueble.ObtenerTodos();
+                    return View(inmueble);
                 }
-                
-            }
-            catch (SqlException ex) 
-            {
-                ViewBag.Error = "Ocurrio un error " + ex.Message;
-                return View(inquilino);
 
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
 
         // GET: InquilinoController/Edit/5
         public ActionResult Edit(int id)
         {
-            var contrato = repositorioInquilino.ObtenerPorId(id);
+            var contrato = repositorioInmueble.ObtenerPorId(id);
             return View();
         }
 
         // POST: InquilinoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Inquilino inquilino)
+        public ActionResult Edit(int id, Inmueble inmueble)
         {
             try
             {
-                inquilino.Id = id;
-                repositorioInquilino.Modificacion(inquilino);
+                inmueble.Id = id;
+                repositorioInmueble.Modificacion(inmueble);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -106,7 +106,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                repositorioInquilino.Baja(id);
+                repositorioInmueble.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (SqlException ex)

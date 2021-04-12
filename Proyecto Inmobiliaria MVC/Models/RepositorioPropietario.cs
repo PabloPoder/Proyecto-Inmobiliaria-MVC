@@ -37,7 +37,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
                     connection.Open();
 
-                    res = Convert.ToInt32(command.ExecuteScalar()); // devuelve la primer columna de la primer fila de resultados del query (id)
+                    res = Convert.ToInt32(command.ExecuteScalar());
+
                     propietario.Id = res;
 
                     connection.Close();

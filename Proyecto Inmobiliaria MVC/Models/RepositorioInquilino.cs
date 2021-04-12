@@ -36,9 +36,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
                     connection.Open();
 
-                    res = command.ExecuteNonQuery();
-                    command.CommandText = "SELECT SCOPE_IDENTITY()";
-                    inquilino.Id = (int)command.ExecuteScalar();
+                    res = Convert.ToInt32(command.ExecuteScalar());
+
+                    inquilino.Id = res;
 
                     connection.Close();
 
@@ -108,7 +108,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Inquilino i = new Inquilino 
+                        Inquilino inquilino = new Inquilino 
                         {
                             Id = reader.GetInt32(0),
                             Nombre = reader.GetString(1),
@@ -117,7 +117,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Telefono = reader.GetString(4),
                             Email = reader.GetString(5),
                         };
-                        res.Add(i);
+                        res.Add(inquilino);
                     }
                     connection.Close();
                 }

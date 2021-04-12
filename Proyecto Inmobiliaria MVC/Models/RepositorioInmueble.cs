@@ -41,6 +41,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     inmueble.Id = res;
 
                     connection.Close();
+
                 }
             }
             return res;
@@ -99,9 +100,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT id, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId" +
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId, " +
                     "propietario.Nombre, propietario.Apellido" +
-                    $" FROM Inmuebles inmuebles INNER JOIN Propietarios propietarios ON inmuebles.PropietarioId = propietario.id";
+                    $" FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
