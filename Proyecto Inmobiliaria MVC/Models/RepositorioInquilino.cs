@@ -17,7 +17,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Alta(Inquilino inquilino)
         {
-            var res = 1;
+            int res = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -127,8 +127,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public Inquilino ObtenerPorId(int id)
         {
-            var inquilino = new Inquilino();
-
+            Inquilino inquilino = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT Id, Nombre, Apellido, Dni, Telefono, Email FROM Inquilinos WHERE Id = @id;";

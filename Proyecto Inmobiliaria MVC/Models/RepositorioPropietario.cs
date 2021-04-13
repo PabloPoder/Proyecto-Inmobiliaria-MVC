@@ -17,7 +17,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Alta(Propietario propietario)
         {
-            var res = 1;
+            int res = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -129,7 +129,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public Propietario ObtenerPorId(int id)
         {
-            var propietario = new Propietario();
+            Propietario propietario = null;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

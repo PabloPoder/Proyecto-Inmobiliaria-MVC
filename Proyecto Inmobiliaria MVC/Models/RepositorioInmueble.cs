@@ -17,7 +17,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Alta(Inmueble inmueble)
         {
-            var res = 1;
+            int res = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -49,7 +49,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Baja(int id)
         {
-            var res = 1;
+            int res = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -69,9 +69,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Modificacion(Inmueble inmueble)
         {
-            var res = 1;
+            int res = -1;
 
-            using(SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"UPDATE Inmuebles SET Direccion = @direccion, Ambientes = @ambientes, " +
                     $"superficie = @superficie, Latitud = @latitud, Longitud = @longitud, PropietarioId = @propietarioId" +
@@ -138,7 +138,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public Inmueble ObtenerPorId(int id)
         {
-            var contrato = new Inmueble();
+            Inmueble inmueble = null;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -156,7 +156,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
                     if (reader.Read())
                     {
-                        Inmueble inmueble = new Inmueble
+                        inmueble = new Inmueble
                         {
                             Id = reader.GetInt32(0),
                             Direccion = reader.GetString(1),
@@ -176,7 +176,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     connection.Close();
                 }
             }
-            return contrato;
+            return inmueble;
         }
 
 

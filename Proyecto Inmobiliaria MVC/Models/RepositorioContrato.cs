@@ -17,7 +17,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Alta(Contrato contrato)
         {
-            var res = 1;
+            int res = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -46,7 +46,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Baja (int id)
         {
-            var res = 1;
+            int res = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -66,7 +66,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public int Modificacion(Contrato contrato)
         {
-            var res = 1;
+            int res = -1;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -139,7 +139,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         public Contrato ObtenerPorId(int id)
         {
-            var contrato = new Contrato();
+            Contrato contrato = null;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -158,7 +158,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
                     if (reader.Read()) 
                     {
-                        contrato = new Contrato()
+                        contrato = new Contrato
                         {
                             Id = reader.GetInt32(0),
                             FechaDesde = reader.GetDateTime(1),
