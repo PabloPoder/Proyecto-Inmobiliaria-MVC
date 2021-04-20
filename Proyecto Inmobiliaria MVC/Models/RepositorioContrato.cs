@@ -147,7 +147,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     $"inmuebles.Direccion, inmuebles.Ambientes " +
                     $"FROM Contratos contratos " +
                     $"INNER JOIN Inquilinos inquilinos ON contratos.InquilinoId = inquilinos.id " +
-                    $"INNER JOIN Inmuebles inmuebles ON contratos.InmueblesId = inmuebles.id WHERE contratos.id = @id;";
+                    $"INNER JOIN Inmuebles inmuebles ON contratos.InmueblesId = inmuebles.id WHERE contrato.id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -183,6 +183,55 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 }
             }
             return contrato;
+        }
+
+        public List<Contrato> ContratosPorInmueble(int id)
+        {
+            List<Contrato> res = new List<Contrato>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT contratos.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
+                    $"inmuebles.Direccion, inmuebles.Ambientes " +
+                    $"FROM Contratos contratos " +
+                    $"INNER JOIN Inquilinos inquilinos ON contratos.InquilinoId = inquilinos.id " +
+                    $"INNER JOIN Inmuebles inmuebles ON contratos.InmuebleId = inmuebles.id WHERE InmuebleId = @id;";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Contrato contrato = new Contrato
+                        {
+                            Id = reader.GetInt32(0),
+                            FechaDesde = reader.GetDateTime(1),
+                            FechaHasta = reader.GetDateTime(2),
+                            InquilinoId = reader.GetInt32(3),
+                            InmuebleId = reader.GetInt32(4),
+                            Inquilino = new Inquilino
+                            {
+                                Id = reader.GetInt32(3),
+                                Nombre = reader.GetString(5),
+                                Apellido = reader.GetString(6),
+                            },
+                            Inmueble = new Inmueble
+                            {
+                                Id = reader.GetInt32(4),
+                                Direccion = reader.GetString(7),
+                                Ambientes = reader.GetInt32(8),
+                            }
+                        };
+                        res.Add(contrato);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
         }
     }
 }

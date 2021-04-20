@@ -21,8 +21,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"INSERT INTO Inmuebles (Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId) " +
-                    $"VALUES (@direccion, @ambientes, @superficie, @latitud, @longitud, @propietarioId);" +
+                string sql = $"INSERT INTO Inmuebles (Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId) " +
+                    $"VALUES (@direccion, @ambientes, @superficie, @latitud, @longitud, @precio, @propietarioId,);" +
                     "SELECT SCOPE_IDENTITY();"; // devuelve el id insertado (LAST_INSERT_ID para mysql)
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -33,6 +33,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@superficie", inmueble.Superficie);
                     command.Parameters.AddWithValue("@latitud", inmueble.Longitud);
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
+                    command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@propietarioId", inmueble.PropietarioId);
 
                     connection.Open();
@@ -74,7 +75,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"UPDATE Inmuebles SET Direccion = @direccion, Ambientes = @ambientes, " +
-                    $"superficie = @superficie, Latitud = @latitud, Longitud = @longitud, PropietarioId = @propietarioId" +
+                    $"superficie = @superficie, Latitud = @latitud, Longitud = @longitud, Precio = @precio, " +
+                    $"PropietarioId = @propietarioId, Estado = @estado " +
                     $"WHERE id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -85,6 +87,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@superficie", inmueble.Superficie);
                     command.Parameters.AddWithValue("@latitud", inmueble.Latitud);
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
+                    command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@propietarioId", inmueble.PropietarioId);
                     connection.Open();
                     res = command.ExecuteNonQuery();
@@ -100,8 +103,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId, " +
-                    "propietario.Nombre, propietario.Apellido" +
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
+                    "propietario.Nombre, propietario.Apellido, estado" +
                     $" FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -120,12 +123,13 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Superficie = reader.GetInt32(3),
                             Latitud = reader.GetDecimal(4),
                             Longitud = reader.GetDecimal(5),
-                            PropietarioId = reader.GetInt32(6),
+                            Precio = reader.GetDecimal(6),
+                            PropietarioId = reader.GetInt32(7),
                             Propietario = new Propietario
                             {
-                                Id = reader.GetInt32(6),
-                                Nombre = reader.GetString(7),
-                                Apellido = reader.GetString(8),
+                                Id = reader.GetInt32(7),
+                                Nombre = reader.GetString(8),
+                                Apellido = reader.GetString(9),
                             }
                         };
                         res.Add(inmueble);
@@ -142,10 +146,10 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT id, Direccion, Ambientes, Superficie, Latitud, Longitud, PropietarioId" +
-                    "propietario.Nombre, propietario.Apellido" +
-                    $" FROM Inmuebles inmuebles INNER JOIN Propietarios propietarios ON inmuebles.PropietarioId = propietario.id " +
-                    $"WHERE inmuebles.id = @id;";
+                string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId" +
+                    "propietario.Nombre, propietario.Apellido, estado" +
+                    $" FROM Inmuebles inmueble INNER JOIN Propietarios propietarios ON inmueble.PropietarioId = propietario.id " +
+                    $"WHERE inmueble.id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -164,12 +168,13 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Superficie = reader.GetInt32(3),
                             Latitud = reader.GetDecimal(4),
                             Longitud = reader.GetDecimal(5),
-                            PropietarioId = reader.GetInt32(6),
+                            Precio = reader.GetDecimal(6),
+                            PropietarioId = reader.GetInt32(7),
                             Propietario = new Propietario
                             {
-                                Id = reader.GetInt32(6),
-                                Nombre = reader.GetString(7),
-                                Apellido = reader.GetString(8),
+                                Id = reader.GetInt32(7),
+                                Nombre = reader.GetString(8),
+                                Apellido = reader.GetString(9),
                             }
                         };
                     }
@@ -179,6 +184,12 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return inmueble;
         }
 
+        public List<Inmueble> ObtenerInmueblesAtivos()
+        {
+            List<Inmueble> res = new List<Inmueble>();
+
+            //Segun las fechas del contrato
+        }
 
     }
 }

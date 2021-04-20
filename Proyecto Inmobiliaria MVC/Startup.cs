@@ -53,5 +53,11 @@ namespace Proyecto_Inmobiliaria_MVC
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+        /*public void ConfigureServices(ServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+                options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador", "SuperAdministrador"))
+            );
+        }*/
     }
 }

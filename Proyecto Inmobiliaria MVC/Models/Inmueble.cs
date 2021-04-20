@@ -21,10 +21,11 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public decimal Latitud { get; set; }
         [Required]
         public decimal Longitud { get; set; }
+        [Required]
+        public decimal Precio { get; set; }
         [Display(Name = "Dueño")]
         public int PropietarioId { get; set; }
         [ForeignKey(nameof(PropietarioId))]
         public Propietario Propietario { get; set; }
-
     }
 }
