@@ -65,13 +65,11 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                     ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
                     return View(inquilino);
                 }
-                
             }
             catch (SqlException ex) 
             {
                 ViewBag.Error = "Ocurrio un error " + ex.Message;
                 return View(inquilino);
-
             }
         }
 

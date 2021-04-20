@@ -17,7 +17,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public DateTime FechaDesde { get; set; }
         [Required]
         [Display(Name = "Fecha Hasta")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
         public DateTime FechaHasta { get; set; }
         [Required]
         public Inquilino Inquilino { get; set; }

@@ -55,13 +55,23 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                repositorioContrato.Alta(contrato);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    repositorioContrato.Alta(contrato);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewBag.Inquilinos = repositorioContrato.ObtenerTodos();
+                    return View(contrato);
+                }
+
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                ViewBag.Error = "Ocurrio un error " + ex.Message;
+                return View(contrato);
+
             }
         }
 
@@ -94,8 +104,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: ContratosController/Delete/5
         public ActionResult Delete(int id)
         {
-            repositorioContrato.Baja(id);
-            return View();
+            try
+            {
+                repositorioContrato.Baja(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: ContratosController/Delete/5

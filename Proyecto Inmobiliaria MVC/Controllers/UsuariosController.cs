@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
-    public class UsuarioController : Controller
+    public class UsuariosController : Controller
     {
         protected readonly IConfiguration configuration;
         RepositorioUsuario repositorioUsuario;
 
-        public UsuarioController(IConfiguration configuration)
+        public UsuariosController(IConfiguration configuration)
         {
             this.repositorioUsuario = new RepositorioUsuario(configuration);
             this.configuration = configuration;
@@ -58,15 +58,23 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                repositorioUsuario.Alta(usuario);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    repositorioUsuario.Alta(usuario);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewBag.Usuarios = repositorioUsuario.ObtenerTodos();
+                    return View(usuario);
+                }
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
-            }
+                ViewBag.Error = "Ocurrio un error " + ex.Message;
+                return View(usuario);
 
+            }
         }
 
         // GET: UsuarioController/Edit/5

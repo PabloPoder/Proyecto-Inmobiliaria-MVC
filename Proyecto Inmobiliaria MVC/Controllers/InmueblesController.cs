@@ -63,7 +63,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 }
                 else
                 {
-                    ViewBag.Inquilinos = repositorioInmueble.ObtenerTodos();
+                    ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
                     return View(inmueble);
                 }
 

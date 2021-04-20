@@ -47,9 +47,11 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT pago.id, FechaPago " +
+                string sql = $"SELECT pago.id, FechaPago, ContratoId, contrato.FechaPago, contrato.InmuebleId, inmueble.Precio  " +
                     $"FROM Pagos pago " +
-                    $"INNER JOIN Contratos contrato ON pago.ContratoId = contrato.id WHERE contrato.id = @id;";
+                    $"INNER JOIN Contratos contrato ON pago.ContratoId = contrato.id " +
+                    $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmueble.id " +
+                    $"WHERE contrato.id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -64,7 +66,17 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                         {
                             Id = reader.GetInt32(0),
                             FechaPago = reader.GetDateTime(1),
-                            ContratoId = reader.GetInt32(3),
+                            ContratoId = reader.GetInt32(2),
+                            Contrato = new Contrato
+                            {
+                                Id = reader.GetInt32(2),
+                                InmuebleId = reader.GetInt32(3),
+                                Inmueble = new Inmueble
+                                {
+                                    Id = reader.GetInt32(3),
+                                    Precio = reader.GetDecimal(4),
+                                }
+                            }
                         };
                         res.Add(pago);
                     }

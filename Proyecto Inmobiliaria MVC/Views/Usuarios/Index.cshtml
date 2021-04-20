@@ -4,10 +4,10 @@
     ViewData["Title"] = "Menu";
 }
 
-<h1>Menu</h1>
+<h1>Usuarios</h1>
 
 <p>
-    <a asp-action="Create">Crear nuevo</a>
+    <a asp-action="Create">Crear Nuevo</a>
 </p>
 <table class="table">
     <thead>
@@ -23,6 +23,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Clave)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Avatar)
@@ -64,9 +67,9 @@
                 @Html.DisplayFor(modelItem => item.RolNombre)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Editar", "Edit", new { Id = item.Id }) |
+                @Html.ActionLink("Detalles", "Details", new { Id = item.Id }) |
+                @Html.ActionLink("Borrar", "Delete", new { Id = item.Id })
             </td>
         </tr>
 }

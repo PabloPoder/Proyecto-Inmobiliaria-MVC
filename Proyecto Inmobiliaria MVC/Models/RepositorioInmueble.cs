@@ -76,7 +76,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             {
                 string sql = $"UPDATE Inmuebles SET Direccion = @direccion, Ambientes = @ambientes, " +
                     $"superficie = @superficie, Latitud = @latitud, Longitud = @longitud, Precio = @precio, " +
-                    $"PropietarioId = @propietarioId, Estado = @estado " +
+                    $"PropietarioId = @propietarioId " +
                     $"WHERE id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -104,7 +104,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
-                    "propietario.Nombre, propietario.Apellido, estado" +
+                    "propietario.Nombre, propietario.Apellido " +
                     $" FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -147,7 +147,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId" +
-                    "propietario.Nombre, propietario.Apellido, estado" +
+                    "propietario.Nombre, propietario.Apellido" +
                     $" FROM Inmuebles inmueble INNER JOIN Propietarios propietarios ON inmueble.PropietarioId = propietario.id " +
                     $"WHERE inmueble.id = @id;";
 
@@ -182,13 +182,6 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 }
             }
             return inmueble;
-        }
-
-        public List<Inmueble> ObtenerInmueblesAtivos()
-        {
-            List<Inmueble> res = new List<Inmueble>();
-
-            //Segun las fechas del contrato
         }
 
     }

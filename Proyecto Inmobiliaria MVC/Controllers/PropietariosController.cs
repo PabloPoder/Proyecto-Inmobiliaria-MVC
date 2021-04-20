@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Proyecto_Inmobiliaria_MVC.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,7 +43,6 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         }
 
         // GET: PersonasController/Create
-        [HttpPost]
         public ActionResult Create() 
         {
             return View();
@@ -58,9 +58,10 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 repositorioPropietario.Alta(propietario);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (SqlException ex)
             {
-                return View();
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -83,17 +84,26 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (SqlException ex)
             {
-                return View();
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
             }
         }
 
         // GET: PersonasController/Delete/5
         public ActionResult Delete(int id)
         {
-            repositorioPropietario.Baja(id);
-            return View();
+            try
+            {
+                repositorioPropietario.Baja(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: PersonasController/Delete/5
