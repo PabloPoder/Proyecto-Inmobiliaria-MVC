@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +9,9 @@ using Proyecto_Inmobiliaria_MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
@@ -36,10 +41,79 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 TempData["Error"] = "Ocurrio un error " + ex.ToString();
                 return RedirectToAction(nameof(Index));
             }
-            
         }
 
-        // GET: UsuarioController/Details/5
+        [Route("salir", Name = "logout")]
+        // GET: Usuarios/Logout/
+        public async Task<ActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        // GET: Usuario/Login/
+        public ActionResult Login (string returnUrl)
+        {
+            TempData["returnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        // POST: Usuario/Login/
+        public async Task<ActionResult> Login(LoginView login)
+        {
+            try
+            {
+                var returnUrl = String.IsNullOrEmpty(TempData["returnUrl"] as string) ? "/Home" : TempData["returnUrl"].ToString();
+                if (ModelState.IsValid)
+                {
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: login.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+
+                    var usuario = repositorioUsuario.ObtenerPorEmail(login.Usuario);
+                    if(usuario == null || usuario.Clave != hashed)
+                    {
+                        ModelState.AddModelError("", "El email o la clave no son correctos");
+                        TempData["returnUrl"] = returnUrl;
+                        return View();
+                    }
+
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, usuario.Email),
+                        new Claim("FullName", usuario.Nombre + " " + usuario.Apellido),
+                        new Claim(ClaimTypes.Role, usuario.RolNombre),
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
+
+                    TempData.Remove("returnUrl");
+                    return Redirect(returnUrl);
+                }
+                TempData["returnUrl"] = returnUrl;
+                return View();
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View();
+            }
+        }
+
+        // GET: PersonasController/Details/5
         public ActionResult Details(int id)
         {
             return View();
@@ -48,6 +122,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: UsuarioController/Create
         public ActionResult Create()
         {
+            ViewBag.Roles = Usuario.ObtenerRoles();
             return View();
         }
 
@@ -56,31 +131,43 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Usuario usuario)
         {
-            try
+            
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    repositorioUsuario.Alta(usuario);
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ViewBag.Usuarios = repositorioUsuario.ObtenerTodos();
-                    return View(usuario);
-                }
-            }
-            catch (SqlException ex)
-            {
-                ViewBag.Error = "Ocurrio un error " + ex.Message;
-                return View(usuario);
+                    usuario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                             password: usuario.Clave,
+                             salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                             prf: KeyDerivationPrf.HMACSHA1,
+                             iterationCount: 1000,
+                             numBytesRequested: 256 / 8));
 
+                    usuario.Rol = 3;
+                    int res = repositorioUsuario.Alta(usuario);
+
+
+                    return RedirectToAction(nameof(Index));
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Roles = Usuario.ObtenerRoles();
+                    return View();
+                }
             }
+            else
+            {
+                return View();
+            }
+           
         }
 
         // GET: UsuarioController/Edit/5
         public ActionResult Edit(int id)
         {
             var usuario = repositorioUsuario.ObtenerPorId(id);
+            ViewBag.Roles = Usuario.ObtenerRoles();
             return View(usuario);
         }
 

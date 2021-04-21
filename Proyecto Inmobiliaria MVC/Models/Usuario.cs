@@ -11,8 +11,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
     {
         SuperAdministrador = 1,
         Administrador = 2,
-        EMpleado = 3,
+        Empleado = 3,
     }
+
     public class Usuario
     {
         [Display(Name = "Código")]

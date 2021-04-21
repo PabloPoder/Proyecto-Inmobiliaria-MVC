@@ -80,13 +80,14 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
+
+                    command.Parameters.AddWithValue("@id", propietario.Id);
                     command.Parameters.AddWithValue("@nombre", propietario.Nombre);
                     command.Parameters.AddWithValue("@apellido", propietario.Apellido);
                     command.Parameters.AddWithValue("@dni", propietario.Dni);
                     command.Parameters.AddWithValue("@telefono", propietario.Telefono);
                     command.Parameters.AddWithValue("@email", propietario.Email);
                     command.Parameters.AddWithValue("@clave", propietario.Clave);
-                    command.Parameters.AddWithValue("@id", propietario.Id);
                     connection.Open();
                     res = command.ExecuteNonQuery(); 
                     connection.Close();

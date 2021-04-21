@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,7 +24,22 @@ namespace Proyecto_Inmobiliaria_MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => 
+                {
+                    options.LoginPath = "/Usuarios/Login"; // A donde redirigir para login
+                    options.LogoutPath = "/usuarios/Logout"; //A donde redirigir para logout
+                    /*options.AccessDeniedPath = "Home/Restringido";*/ // A donde redirigir para recurso restringido
+                });
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administrador", policy =>
+                    policy.RequireRole("Administrador", "SuperAdministrador")
+                );
+            });
+
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,20 +60,16 @@ namespace Proyecto_Inmobiliaria_MVC
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("login", "login/{**accion}", new { controller = "Usuarios", action = "Login" });
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");           
             });
+
+
         }
-        /*public void ConfigureServices(ServiceCollection services)
-        {
-            services.AddAuthorization(options =>
-                options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador", "SuperAdministrador"))
-            );
-        }*/
     }
 }

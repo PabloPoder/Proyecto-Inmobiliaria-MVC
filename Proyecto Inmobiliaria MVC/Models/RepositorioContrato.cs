@@ -77,6 +77,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", contrato.Id);
                     command.Parameters.AddWithValue("@FechaDesde", contrato.FechaDesde);
                     command.Parameters.AddWithValue("@FechaHasta", contrato.FechaHasta);
                     command.Parameters.AddWithValue("@InquilinoId", contrato.InquilinoId);

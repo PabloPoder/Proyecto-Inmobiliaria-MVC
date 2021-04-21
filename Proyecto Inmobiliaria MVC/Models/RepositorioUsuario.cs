@@ -82,6 +82,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", usuario.Id);
                     command.Parameters.AddWithValue("@nombre", usuario.Nombre);
                     command.Parameters.AddWithValue("@apellido", usuario.Apellido);
                     command.Parameters.AddWithValue("@email", usuario.Email);
@@ -100,10 +101,10 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public List<Usuario> ObtenerTodos()
         {
             List<Usuario> res = new List<Usuario>();
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = "SELECT id, Nombre, Apellido, Email, Avatar, Rol FROM Usuarios;";
+                string sql = $"SELECT Id, Nombre, Apellido, Email, Avatar, Rol, Clave " +
+                    $"FROM Usuarios;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -121,6 +122,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Email = reader.GetString(3),
                             Avatar = reader.GetString(4),
                             Rol = reader.GetInt32(5),
+                            Clave = reader.GetString(6),
                         };
                         res.Add(usuario);
                     }
@@ -136,7 +138,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, FROM Usuarios WHERE id = @id;";
+                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, Clave FROM Usuarios WHERE id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -169,7 +171,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, FROM Usuarios WHERE Email = @email;";
+                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, Clave FROM Usuarios WHERE Email = @email;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -188,6 +190,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Email = reader.GetString(3),
                             Avatar = reader.GetString(4),
                             Rol = reader.GetInt32(5),
+                            Clave = reader.GetString(6),
                         };
                     }
                 }

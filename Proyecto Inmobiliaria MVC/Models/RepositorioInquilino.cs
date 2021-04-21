@@ -80,6 +80,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", inquilino.Id);
                     command.Parameters.AddWithValue("@nombre", inquilino.Nombre);
                     command.Parameters.AddWithValue("@apellido", inquilino.Apellido);
                     command.Parameters.AddWithValue("@dni", inquilino.Dni);
