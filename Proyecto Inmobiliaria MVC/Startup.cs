@@ -28,8 +28,8 @@ namespace Proyecto_Inmobiliaria_MVC
                 .AddCookie(options => 
                 {
                     options.LoginPath = "/Usuarios/Login"; // A donde redirigir para login
-                    options.LogoutPath = "/usuarios/Logout"; //A donde redirigir para logout
-                    /*options.AccessDeniedPath = "Home/Restringido";*/ // A donde redirigir para recurso restringido
+                    options.LogoutPath = "/Usuarios/Logout"; //A donde redirigir para logout
+                    options.AccessDeniedPath = "/Home/Restringido"; // A donde redirigir para recurso restringido
                 });
             
             services.AddAuthorization(options =>

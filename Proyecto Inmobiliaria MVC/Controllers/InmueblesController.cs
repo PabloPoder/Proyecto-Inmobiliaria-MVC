@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Proyecto_Inmobiliaria_MVC.Models;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
+    [Authorize]
     public class InmueblesController : Controller
     {
         protected readonly IConfiguration configuration;
@@ -82,9 +84,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: InquilinoController/Edit/5
         public ActionResult Edit(int id)
         {
-            var contrato = repositorioInmueble.ObtenerPorId(id);
-            ViewBag.Roles = Usuario.ObtenerRoles();
-            return View();
+            var inmueble = repositorioInmueble.ObtenerPorId(id);
+            ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+            return View(inmueble);
         }
 
         // POST: InquilinoController/Edit/5
@@ -96,7 +98,6 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             {
                 inmueble.Id = id;
                 repositorioInmueble.Modificacion(inmueble);
-
                 return RedirectToAction(nameof(Index));
             }
             catch (SqlException ex)
@@ -107,6 +108,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         }
 
         // GET: InquilinoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             try
@@ -122,6 +124,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         }
 
         // POST: InquilinoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -136,5 +139,15 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+
+        public ActionResult PorPropietario(int id)
+        {
+            var lista = repositorioInmueble.ObtenerPorPropietario(id);
+
+            ViewBag.InmuebleId = id;
+            return View("Index", lista);
+        }
     }
 }
+

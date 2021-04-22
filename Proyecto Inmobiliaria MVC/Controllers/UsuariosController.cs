@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
+    [Authorize]
     public class UsuariosController : Controller
     {
         protected readonly IConfiguration configuration;
@@ -52,8 +53,8 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [AllowAnonymous]
         // GET: Usuario/Login/
+        [AllowAnonymous]
         public ActionResult Login (string returnUrl)
         {
             TempData["returnUrl"] = returnUrl;
@@ -119,6 +120,15 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             return View();
         }
 
+        // GET: Usuarios/Perfil/5
+        public ActionResult Perfil()
+        {
+            var usuario = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
+            ViewBag.Roles = Usuario.ObtenerRoles();
+            return View("Edit", usuario);
+        }
+
+
         // GET: UsuarioController/Create
         public ActionResult Create()
         {
@@ -145,7 +155,6 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
 
                     usuario.Rol = 3;
                     int res = repositorioUsuario.Alta(usuario);
-
 
                     return RedirectToAction(nameof(Index));
 
@@ -189,6 +198,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
+        [Authorize(Policy = "Administrador")]
         // GET: UsuarioController/Delete/5
         public ActionResult Delete(int id)
         {
@@ -199,6 +209,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // POST: UsuarioController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try

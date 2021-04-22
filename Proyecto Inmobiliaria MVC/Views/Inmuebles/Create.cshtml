@@ -38,6 +38,11 @@
                 <span asp-validation-for="Longitud" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Propietario</label>
                 <select class="form-control" name="PropietarioId">
                     @foreach (var item in (IList<Propietario>)ViewBag.Propietarios)
@@ -48,8 +53,8 @@
                 <span asp-validation-for="PropietarioId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+                <input type="submit" value="Crear" class="btn btn-primary" />
+                <a class="btn btn-secondary" asp-action="Index">Volver a la Lista</a>
             </div>
         </form>
     </div>

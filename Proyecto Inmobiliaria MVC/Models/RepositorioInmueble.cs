@@ -22,7 +22,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"INSERT INTO Inmuebles (Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId) " +
-                    $"VALUES (@direccion, @ambientes, @superficie, @latitud, @longitud, @precio, @propietarioId,);" +
+                    $"VALUES (@direccion, @ambientes, @superficie, @latitud, @longitud, @precio, @propietarioId); " +
                     "SELECT SCOPE_IDENTITY();"; // devuelve el id insertado (LAST_INSERT_ID para mysql)
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -147,9 +147,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId" +
-                    "propietario.Nombre, propietario.Apellido" +
-                    $" FROM Inmuebles inmueble INNER JOIN Propietarios propietarios ON inmueble.PropietarioId = propietario.id " +
+                string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
+                    "propietario.Nombre, propietario.Apellido " +
+                    $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
                     $"WHERE inmueble.id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -184,6 +184,52 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             }
             return inmueble;
         }
+
+        public List<Inmueble> ObtenerPorPropietario(int id)
+        {
+            List<Inmueble> res = new List<Inmueble>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
+                    "propietario.Nombre, propietario.Apellido " +
+                    $" FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
+                    $"WHERE propietario.id = @id";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Inmueble inmueble = new Inmueble
+                        {
+                            Id = reader.GetInt32(0),
+                            Direccion = reader.GetString(1),
+                            Ambientes = reader.GetInt32(2),
+                            Superficie = reader.GetInt32(3),
+                            Latitud = reader.GetDecimal(4),
+                            Longitud = reader.GetDecimal(5),
+                            Precio = reader.GetDecimal(6),
+                            PropietarioId = reader.GetInt32(7),
+                            Propietario = new Propietario
+                            {
+                                Id = reader.GetInt32(7),
+                                Nombre = reader.GetString(8),
+                                Apellido = reader.GetString(9),
+                            }
+                        };
+                        res.Add(inmueble);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
 
     }
 }

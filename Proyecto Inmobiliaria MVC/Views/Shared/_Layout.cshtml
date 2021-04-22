@@ -18,27 +18,37 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index">Propietarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index">Contratos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index">Inquilinos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index">Inmuebles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a>
-                        </li>
-                        <li class="nav-item">
-                            @if (!User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index">Propietarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index">Contratos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index">Inquilinos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index">Inmuebles</a>
+                            </li>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
                             {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Iniciar Sesión</a>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"> Usuarios</a>
+                                </li>
                             }
-                        </li>
+                            <div class="dropdown">
+                                <a class="btn btn-primary dropdown-toggle text-light" href="#" role="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent" data-display="static">
+                                    <span class="lnr lnr-user"></span> @User.Identity.Name
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Perfil"><i class="lnr lnr-user"></i> Perfil</a>
+                                    <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Logout"><i class="lnr lnr-exit"></i> Salir</a>
+                                </div>
+                            </div>
+                        }
                     </ul>
                 </div>
             </div>

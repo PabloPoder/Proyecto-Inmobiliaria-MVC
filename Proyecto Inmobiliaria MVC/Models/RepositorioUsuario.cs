@@ -33,7 +33,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@email", usuario.Email);
                     command.Parameters.AddWithValue("@clave", usuario.Clave);
                     if (String.IsNullOrEmpty(usuario.Avatar))
-                        command.Parameters.AddWithValue("@avatar", DBNull.Value);
+                        command.Parameters.AddWithValue("@avatar", 0);
                     else
                         command.Parameters.AddWithValue("@avatar", usuario.Avatar);
                     command.Parameters.AddWithValue("@rol", usuario.Rol);

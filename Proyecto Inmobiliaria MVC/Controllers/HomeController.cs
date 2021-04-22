@@ -23,6 +23,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             return View();
         }
 
+        public ActionResult Restringido()
+        {
+            return View();
+        }
+
+        public ActionResult SoloAdmin()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

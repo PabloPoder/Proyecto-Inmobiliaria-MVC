@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Proyecto_Inmobiliaria_MVC.Models;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Proyecto_Inmobiliaria_MVC.Controllers
 {
+    [Authorize]
     public class PropietariosController : Controller
     {
         protected readonly IConfiguration configuration;
@@ -92,6 +94,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         }
 
         // GET: PersonasController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             try
@@ -107,6 +110,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         }
 
         // POST: PersonasController/Delete/5
+        [Authorize(Policy = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
