@@ -55,7 +55,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"DELETE FROM Usuarios WHERE Id = @id";
+                string sql = $"UPDATE Usuarios SET Estado = 0 WHERE Id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -104,7 +104,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT Id, Nombre, Apellido, Email, Avatar, Rol, Clave " +
-                    $"FROM Usuarios;";
+                    $"FROM Usuarios WHERE Estado = 1;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -138,7 +138,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, Clave FROM Usuarios WHERE id = @id;";
+                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, Clave FROM Usuarios WHERE id = @id AND Estado = 1;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -171,7 +171,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, Clave FROM Usuarios WHERE Email = @email;";
+                string sql = $"SELECT id, Nombre, Apellido, Email, Avatar, Rol, Clave FROM Usuarios WHERE Email = @email AND Estado = 1;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {

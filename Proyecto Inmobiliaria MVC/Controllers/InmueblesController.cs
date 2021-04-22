@@ -42,10 +42,12 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-        // GET: InquilinoController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult PorPropietario(int id)
         {
-            return View();
+            var lista = repositorioInmueble.ObtenerPorPropietario(id);
+            ViewBag.Id = id;
+
+            return View("Index", lista);
         }
 
         // GET: Inmueble/Create
@@ -140,14 +142,6 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-
-        public ActionResult PorPropietario(int id)
-        {
-            var lista = repositorioInmueble.ObtenerPorPropietario(id);
-
-            ViewBag.InmuebleId = id;
-            return View("Index", lista);
-        }
     }
 }
 

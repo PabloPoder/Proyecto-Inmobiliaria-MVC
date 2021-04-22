@@ -20,5 +20,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public string Telefono { get; set; }
         [Required, EmailAddress]
         public string Email { get; set; }
+        public bool Estado { get; set; }
+
     }
 }

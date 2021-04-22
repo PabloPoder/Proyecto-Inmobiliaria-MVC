@@ -31,6 +31,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         [Display(Name = "Código Inquilino")]
         [ForeignKey(nameof(InquilinoId))]
         public int InquilinoId { get; set; }
+        public bool Estado { get; set; }
 
     }
 }

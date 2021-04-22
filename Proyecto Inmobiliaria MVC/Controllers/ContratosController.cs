@@ -64,17 +64,8 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    repositorioContrato.Alta(contrato);
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ViewBag.Inquilinos = repositorioContrato.ObtenerTodos();
-                    return View(contrato);
-                }
-
+                repositorioContrato.Alta(contrato);
+                return RedirectToAction(nameof(Index));
             }
             catch (SqlException ex)
             {

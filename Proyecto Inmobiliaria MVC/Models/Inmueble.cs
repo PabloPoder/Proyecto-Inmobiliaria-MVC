@@ -27,5 +27,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public int PropietarioId { get; set; }
         [ForeignKey(nameof(PropietarioId))]
         public Propietario Propietario { get; set; }
+        public bool Estado { get; set; }
+
     }
 }

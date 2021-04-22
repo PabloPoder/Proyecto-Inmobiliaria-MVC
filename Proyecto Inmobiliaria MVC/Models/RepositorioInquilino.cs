@@ -41,7 +41,6 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     inquilino.Id = res;
 
                     connection.Close();
-
                 }
             }
             return res;
@@ -53,7 +52,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"DELETE FROM Inquilinos WHERE id = @id";
+                string sql = $"UPDATE Inquilinos SET Estado = 0 WHERE id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -100,8 +99,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             List<Inquilino> res = new List<Inquilino>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT id, Nombre, Apellido, Dni, Telefono, Email" +
-                    $" FROM Inquilinos";
+                string sql = $"SELECT id, Nombre, Apellido, Dni, Telefono, Email, Estado" +
+                    $" FROM Inquilinos WHERE Estado = 1";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
@@ -109,7 +108,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Inquilino inquilino = new Inquilino 
+                        Inquilino inquilino = new Inquilino
                         {
                             Id = reader.GetInt32(0),
                             Nombre = reader.GetString(1),
@@ -117,6 +116,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Dni = reader.GetString(3),
                             Telefono = reader.GetString(4),
                             Email = reader.GetString(5),
+                            Estado = reader.GetBoolean(6)
                         };
                         res.Add(inquilino);
                     }
@@ -131,7 +131,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             Inquilino inquilino = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT Id, Nombre, Apellido, Dni, Telefono, Email FROM Inquilinos WHERE Id = @id;";
+                string sql = $"SELECT Id, Nombre, Apellido, Dni, Telefono, Email, Estado FROM Inquilinos WHERE Id = @id AND Estado = 1;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -150,6 +150,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Dni = reader.GetString(3),
                             Telefono = reader.GetString(4),
                             Email = reader.GetString(5),
+                            Estado = reader.GetBoolean(6)
                         };
                     }
                 }

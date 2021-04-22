@@ -28,6 +28,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public string Clave{ get; set; }
         public string Avatar { get; set; }
         public IFormFile AvatarFile { get; set; }
+        public bool Estado { get; set; }
         public int Rol { get; set; }
 
         public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";

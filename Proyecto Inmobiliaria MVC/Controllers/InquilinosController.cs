@@ -78,8 +78,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: InquilinoController/Edit/5
         public ActionResult Edit(int id)
         {
-            var contrato = repositorioInquilino.ObtenerPorId(id);
-            return View();
+            var inquilino = repositorioInquilino.ObtenerPorId(id);
+            ViewBag.Inquilino = repositorioInquilino.ObtenerTodos();
+            return View(inquilino);
         }
 
         // POST: InquilinoController/Edit/5

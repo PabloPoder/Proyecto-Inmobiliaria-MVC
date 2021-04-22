@@ -54,7 +54,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = "DELETE FROM Inmuebles WHERE id = @id";
+                string sql = "UPDATE Inmuebles SET Estado = 0 WHERE id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -104,9 +104,10 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
-                    "propietario.Nombre, propietario.Apellido " +
-                    $" FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id";
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, " +
+                    "propietario.Nombre, propietario.Apellido, propietario.Estado  " +
+                    $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
+                    $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -125,12 +126,13 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Latitud = reader.GetDecimal(4),
                             Longitud = reader.GetDecimal(5),
                             Precio = reader.GetDecimal(6),
-                            PropietarioId = reader.GetInt32(7),
+                            Estado = reader.GetBoolean(7),
+                            PropietarioId = reader.GetInt32(8),
                             Propietario = new Propietario
                             {
-                                Id = reader.GetInt32(7),
-                                Nombre = reader.GetString(8),
-                                Apellido = reader.GetString(9),
+                                Id = reader.GetInt32(8),
+                                Nombre = reader.GetString(9),
+                                Apellido = reader.GetString(10),
                             }
                         };
                         res.Add(inmueble);
@@ -150,7 +152,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
                     "propietario.Nombre, propietario.Apellido " +
                     $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
-                    $"WHERE inmueble.id = @id;";
+                    $"WHERE inmueble.id = @id; AND Estado = 1";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -194,11 +196,11 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
                     "propietario.Nombre, propietario.Apellido " +
                     $" FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
-                    $"WHERE propietario.id = @id";
+                    $"WHERE propietario.id = @id AND inmueble.Estado = 1";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    command.Parameters.AddWithValue("@id", id);
                     command.CommandType = CommandType.Text;
                     connection.Open();
                     var reader = command.ExecuteReader();
@@ -229,7 +231,6 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             }
             return res;
         }
-
 
     }
 }
