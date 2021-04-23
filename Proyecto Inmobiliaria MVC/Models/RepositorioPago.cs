@@ -47,15 +47,15 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT pago.id, FechaPago, ContratoId, contrato.FechaPago, contrato.InmuebleId, inmueble.Precio  " +
+                string sql = $"SELECT pago.id, FechaPago, ContratoId, FechaPago, contrato.InmuebleId, inmueble.Precio " +
                     $"FROM Pagos pago " +
                     $"INNER JOIN Contratos contrato ON pago.ContratoId = contrato.id " +
-                    $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmueble.id " +
+                    $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id " +
                     $"WHERE contrato.id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.Add("@contrato.id", SqlDbType.Int).Value = id;
+                    command.Parameters.AddWithValue("@id", id);
                     command.CommandType = CommandType.Text;
                     connection.Open();
                     var reader = command.ExecuteReader();

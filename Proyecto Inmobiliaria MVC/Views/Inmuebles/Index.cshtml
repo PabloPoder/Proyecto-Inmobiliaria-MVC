@@ -61,14 +61,14 @@
                 @Html.DisplayFor(modelItem => item.Longitud)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Precio)
+                @Html.DisplayFor(modelItem => item.Precio) $ARS
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PropietarioId)
+                @(item.Propietario.Nombre + " " + item.Propietario.Apellido)
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { Id = item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new { Id = item.Id }) |
+                @Html.ActionLink("Contratos", "PorInmueble", "Contratos", new { Id = item.Id }) |
                 @Html.ActionLink("Borrar", "Delete", new { Id = item.Id })
             </td>
         </tr>

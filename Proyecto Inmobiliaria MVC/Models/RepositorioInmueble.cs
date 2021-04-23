@@ -152,7 +152,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
                     "propietario.Nombre, propietario.Apellido " +
                     $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
-                    $"WHERE inmueble.id = @id; AND Estado = 1";
+                    $"WHERE inmueble.id = @id AND inmueble.Estado = 1";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -231,6 +231,5 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             }
             return res;
         }
-
     }
 }

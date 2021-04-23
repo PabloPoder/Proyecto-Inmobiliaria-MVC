@@ -146,11 +146,11 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT contratos.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
+                string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
                     $"inmuebles.Direccion, inmuebles.Ambientes " +
-                    $"FROM Contratos contratos " +
-                    $"INNER JOIN Inquilinos inquilinos ON contratos.InquilinoId = inquilinos.id " +
-                    $"INNER JOIN Inmuebles inmuebles ON contratos.InmueblesId = inmuebles.id WHERE contrato.id = @id AND Estado = 1;;";
+                    $"FROM Contratos contrato " +
+                    $"INNER JOIN Inquilinos inquilinos ON contrato.InquilinoId = inquilinos.id " +
+                    $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmuebles.id WHERE contrato.id = @id AND contrato.Estado = 1;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -188,17 +188,17 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return contrato;
         }
 
-        public List<Contrato> ContratosPorInmueble(int id)
+        public List<Contrato> ObtenerPorInmueble(int id)
         {
             List<Contrato> res = new List<Contrato>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT contratos.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
+                string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
                     $"inmuebles.Direccion, inmuebles.Ambientes " +
-                    $"FROM Contratos contratos " +
-                    $"INNER JOIN Inquilinos inquilinos ON contratos.InquilinoId = inquilinos.id " +
-                    $"INNER JOIN Inmuebles inmuebles ON contratos.InmuebleId = inmuebles.id WHERE InmuebleId = @id AND Estado = 1;";
+                    $"FROM Contratos contrato " +
+                    $"INNER JOIN Inquilinos inquilinos ON contrato.InquilinoId = inquilinos.id " +
+                    $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmuebles.id WHERE InmuebleId = @id AND contrato.Estado = 1;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -236,5 +236,25 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             }
             return res;
         }
+
+        /* public List<Contrato> ObtenerContratosVigentes(DateTime FechaDesde, DateTime FechaHasta)
+        {
+            List<Contrato> res = new List<Contrato>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilino.Nombre, inquilino.Apellido, " +
+                    $"inmueble.Direccion, inmueble.Ambientes " +
+                    $"FROM Contratos contrato " +
+                    $"INNER JOIN Inquilinos inquilino ON contrato.InquilinoId = inquilino.id AND inquilino.Estado = 1 " +
+                    $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id AND inmueble.Estado = 1 " +
+                    $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id AND propietario.Estado = 1 " +
+                    $"WHERE contrato.Estado = 1 AND (FechaDesde >= @FechaDesde AND FechaHasta <= @FechaHasta) OR ;";
+
+
+            }
+
+                return res;
+        }*/
     }
 }

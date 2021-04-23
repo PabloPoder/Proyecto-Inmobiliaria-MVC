@@ -22,10 +22,10 @@
                 @Html.DisplayNameFor(model => model.FechaHasta)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InmuebleId)
+                Inquilino
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InquilinoId)
+                Inmueble
             </th>
             <th></th>
         </tr>
@@ -43,15 +43,16 @@
                 @Html.DisplayFor(modelItem => item.FechaHasta)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.InmuebleId)
+                @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.InquilinoId)
+                @(item.Inmueble.Direccion + " " + item.Inmueble.Precio +  " $ARS")
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { Id = item.Id }) |
-                @Html.ActionLink("Detalles", "Details", new { Id = item.Id }) |
+                @Html.ActionLink("Pagos", "ObtenerPagos", "Pagos", new { id = item.Id }) |
                 @Html.ActionLink("Borrar", "Delete", new { Id = item.Id })
+
             </td>
         </tr>
 }

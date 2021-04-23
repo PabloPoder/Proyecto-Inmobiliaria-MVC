@@ -18,6 +18,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         RepositorioContrato repositorioContrato;
         private readonly RepositorioInmueble repositorioInmueble;
         private readonly RepositorioInquilino repositorioInquilino;
+        private readonly RepositorioPago repositorioPago;
 
 
         public ContratosController(IConfiguration configuration)
@@ -25,6 +26,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             repositorioContrato = new RepositorioContrato(configuration);
             repositorioInmueble = new RepositorioInmueble(configuration);
             repositorioInquilino = new RepositorioInquilino(configuration);
+            repositorioPago = new RepositorioPago(configuration);
             this.configuration = configuration;
         }
 
@@ -47,6 +49,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         public ActionResult Details(int id)
         {
             return View();
+        }
+
+        public ActionResult PorInmueble(int id)
+        {
+            var lista = repositorioContrato.ObtenerPorInmueble(id);
+            ViewBag.Id = id;
+
+            return View("Index", lista);
         }
 
         // GET: ContratosController/Create

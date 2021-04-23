@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Proyecto_Inmobiliaria_MVC.Models.Pago>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Pagos</h1>
+
+<p>
+    @Html.ActionLink("Crear", "Create", new { id = ViewBag.ContratoId })
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaPago)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContratoId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaPago)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContratoId)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { Id = item.Id }) |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

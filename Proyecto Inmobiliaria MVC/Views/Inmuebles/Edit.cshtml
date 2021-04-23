@@ -47,7 +47,7 @@
                 <select class="form-control" name="PropietarioId">
                     @foreach (var item in (IList<Propietario>)ViewBag.Propietarios)
                     {
-                        <option value="@item.Id">@(item.Nombre + " " + item.Apellido)</option>
+                        @:<option @(item.Id == Model.PropietarioId ? "selected" : "") value="@item.Id">@(item.Nombre + " " + item.Apellido)</option>
                     }
                 </select>
                 <span asp-validation-for="PropietarioId" class="text-danger"></span>

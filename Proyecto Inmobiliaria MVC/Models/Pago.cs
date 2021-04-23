@@ -15,7 +15,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         [Display(Name = "Fecha de Pago")]
         public DateTime FechaPago { get; set; }
         [Required]
-        [Display(Name = "Código Inquilino")]
+        [Display(Name = "Código Contrato")]
         [ForeignKey(nameof(ContratoId))]
         public int ContratoId { get; set; }
         public Contrato Contrato { get; set; }
