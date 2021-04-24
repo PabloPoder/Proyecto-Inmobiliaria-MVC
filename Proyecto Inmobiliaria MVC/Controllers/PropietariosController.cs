@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -57,6 +58,13 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
+                propietario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                             password: propietario.Clave,
+                             salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                             prf: KeyDerivationPrf.HMACSHA1,
+                             iterationCount: 1000,
+                             numBytesRequested: 256 / 8));
+
                 repositorioPropietario.Alta(propietario);
                 return RedirectToAction(nameof(Index));
             }

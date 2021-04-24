@@ -11,15 +11,19 @@ namespace Proyecto_Inmobiliaria_MVC.Models
     {
         [Display(Name = "Código")]
         public int Id { get; set; }
-        [Required]
+        
         [Display(Name = "Fecha de Pago")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [Required ,DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaPago { get; set; }
         [Required]
         [Display(Name = "Código Contrato")]
         [ForeignKey(nameof(ContratoId))]
         public int ContratoId { get; set; }
         public Contrato Contrato { get; set; }
+        [Required]
+        public Decimal Precio { get; set; }
+        [Required]
+        public bool Estado { get; set; }
 
     }
 }

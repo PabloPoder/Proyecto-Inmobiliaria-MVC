@@ -231,5 +231,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             }
             return res;
         }
+
+        
     }
 }

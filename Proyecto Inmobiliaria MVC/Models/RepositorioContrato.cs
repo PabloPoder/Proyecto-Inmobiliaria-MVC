@@ -97,7 +97,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilino.Nombre, inquilino.Apellido, " +
-                    $"inmueble.Direccion, inmueble.Ambientes " +
+                    $"inmueble.Direccion, inmueble.Ambientes, inmueble.Precio " +
                     $"FROM Contratos contrato " +
                     $"INNER JOIN Inquilinos inquilino ON contrato.InquilinoId = inquilino.id AND inquilino.Estado = 1 " +
                     $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id AND inmueble.Estado = 1 " +
@@ -130,6 +130,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                                 Id = reader.GetInt32(4),
                                 Direccion = reader.GetString(7),
                                 Ambientes = reader.GetInt32(8),
+                                Precio = reader.GetDecimal(9),
                             }
                         };
                         res.Add(contrato);
@@ -238,7 +239,56 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return res;
         }
 
-        /* public List<Contrato> ObtenerContratosVigentes(DateTime FechaDesde, DateTime FechaHasta)
+        public List<Contrato> ObtenerPorInquilino(int id)
+        {
+            List<Contrato> res = new List<Contrato>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
+                    $"inmuebles.Direccion, inmuebles.Ambientes " +
+                    $"FROM Contratos contrato " +
+                    $"INNER JOIN Inquilinos inquilinos ON contrato.InquilinoId = inquilinos.id " +
+                    $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmuebles.id WHERE InquilinoId = @id AND contrato.Estado = 1;";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Contrato contrato = new Contrato
+                        {
+                            Id = reader.GetInt32(0),
+                            FechaDesde = reader.GetDateTime(1),
+                            FechaHasta = reader.GetDateTime(2),
+                            InquilinoId = reader.GetInt32(3),
+                            InmuebleId = reader.GetInt32(4),
+                            Inquilino = new Inquilino
+                            {
+                                Id = reader.GetInt32(3),
+                                Nombre = reader.GetString(5),
+                                Apellido = reader.GetString(6),
+                            },
+                            Inmueble = new Inmueble
+                            {
+                                Id = reader.GetInt32(4),
+                                Direccion = reader.GetString(7),
+                                Ambientes = reader.GetInt32(8),
+                            }
+                        };
+                        res.Add(contrato);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
+        public List<Contrato> ObtenerContratosVigentes()
         {
             List<Contrato> res = new List<Contrato>();
 
@@ -250,12 +300,42 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     $"INNER JOIN Inquilinos inquilino ON contrato.InquilinoId = inquilino.id AND inquilino.Estado = 1 " +
                     $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id AND inmueble.Estado = 1 " +
                     $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id AND propietario.Estado = 1 " +
-                    $"WHERE contrato.Estado = 1 AND (FechaDesde >= @FechaDesde AND FechaHasta <= @FechaHasta) OR ;";
+                    $"WHERE contrato.Estado = 1 AND FechaHasta >= GETDATE();";
 
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
 
+                    while (reader.Read())
+                    {
+                        Contrato contrato = new Contrato
+                        {
+                            Id = reader.GetInt32(0),
+                            FechaDesde = reader.GetDateTime(1),
+                            FechaHasta = reader.GetDateTime(2),
+                            InquilinoId = reader.GetInt32(3),
+                            InmuebleId = reader.GetInt32(4),
+                            Inquilino = new Inquilino
+                            {
+                                Id = reader.GetInt32(3),
+                                Nombre = reader.GetString(5),
+                                Apellido = reader.GetString(6),
+                            },
+                            Inmueble = new Inmueble
+                            {
+                                Id = reader.GetInt32(4),
+                                Direccion = reader.GetString(7),
+                                Ambientes = reader.GetInt32(8),
+                            }
+                        };
+                        res.Add(contrato);
+                    }
+                    connection.Close();
+                }
             }
-
-                return res;
-        }*/
+            return res;
+        }
     }
 }

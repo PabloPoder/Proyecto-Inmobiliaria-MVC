@@ -33,17 +33,13 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index">Inmuebles</a>
                             </li>
-                            @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"> Usuarios</a>
-                                </li>
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index"> Usuarios</a>
+                            </li>
                             <div class="dropdown">
                                 <a class="btn btn-danger dropdown-toggle text-light" href="#" role="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent" data-display="static">
                                     <span class="lnr lnr-user"></span> @User.Identity.Name
                                 </a>
-
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Perfil"><i class="lnr lnr-user"></i> Perfil</a>
                                     <a class="dropdown-item text-dark" asp-controller="Usuarios" asp-action="Logout"><i class="lnr lnr-exit"></i> Salir</a>
@@ -56,12 +52,15 @@
         </nav>
     </header>
 
-    @*<div class="alert alert-info alert-dismissible fade show" role="alert">
+    @if (!String.IsNullOrEmpty(@ViewBag.Error)) 
+    { 
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
             <strong>Información:</strong> @ViewBag.Error
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
             </button>
-        </div>*@
+        </div>
+    }
 
 
     <div class="container">

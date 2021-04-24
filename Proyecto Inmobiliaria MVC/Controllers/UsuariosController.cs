@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,12 +21,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
     public class UsuariosController : Controller
     {
         protected readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
         RepositorioUsuario repositorioUsuario;
 
-        public UsuariosController(IConfiguration configuration)
+        public UsuariosController(IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.repositorioUsuario = new RepositorioUsuario(configuration);
             this.configuration = configuration;
+            this.environment = environment;
         }
 
         // GET: UsuarioController
@@ -33,14 +36,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
+                ViewData["Error"] = TempData["Error"];
+
                 var lista = repositorioUsuario.ObtenerTodos();
-                ViewData[nameof(Usuario)] = lista;
+
                 return View(lista);
             }
             catch (SqlException ex)
             {
                 TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "Home");
             }
         }
 
@@ -150,13 +155,33 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                     usuario.Rol = 3;
                     int res = repositorioUsuario.Alta(usuario);
 
+                    if (usuario.AvatarFile != null && usuario.Id > 0)
+                    {
+                        string wwwPath = environment.WebRootPath;
+                        string path = Path.Combine(wwwPath, "Uploads");
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        //Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
+                        string fileName = "avatar_" + usuario.Id + Path.GetExtension(usuario.AvatarFile.FileName);
+                        string pathCompleto = Path.Combine(path, fileName);
+                        usuario.Avatar = Path.Combine("/Uploads", fileName);
+                        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                        {
+                            usuario.AvatarFile.CopyTo(stream);
+                        }
+                        repositorioUsuario.Modificacion(usuario);
+                    }
+
                     return RedirectToAction(nameof(Index));
 
                 }
                 catch (Exception ex)
                 {
                     ViewBag.Roles = Usuario.ObtenerRoles();
-                    return View();
+                    TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                    return RedirectToAction(nameof(Index));
                 }
             }
             else
@@ -179,26 +204,40 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Usuario usuario)
         {
-            try
+            if (!User.IsInRole("Administrador"))
             {
-                usuario.Id = id;
-
-                usuario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                            password: usuario.Clave,
-                            salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-                            prf: KeyDerivationPrf.HMACSHA1,
-                            iterationCount: 1000,
-                            numBytesRequested: 256 / 8));
-
-                repositorioUsuario.Modificacion(usuario);
-
-                return RedirectToAction(nameof(Index));
+                var usuarioActual = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
+                if (usuarioActual.Id != id)
+                {//si no es admin, solo puede modificarse él mismo
+                    TempData["Error"] = "Solo puedes modificar tu perfil";
+                    return RedirectToAction(nameof(Index), "Home");
+                }
             }
-            catch (SqlException ex)
+            else
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    usuario.Id = id;
+
+                    usuario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                password: usuario.Clave,
+                                salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                                prf: KeyDerivationPrf.HMACSHA1,
+                                iterationCount: 1000,
+                                numBytesRequested: 256 / 8));
+
+                    repositorioUsuario.Modificacion(usuario);
+
+                }
+                catch (SqlException ex)
+                {
+                    TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                    return RedirectToAction(nameof(Index));
+                }
             }
+            return RedirectToAction(nameof(Index));
+
+
         }
 
         [Authorize(Policy = "Administrador")]

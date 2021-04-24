@@ -41,19 +41,35 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return RedirectToAction(nameof(Index), "Home");
             }
         }
 
-        // GET: ContratosController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult ObtenerVigentes()
         {
-            return View();
+            try
+            {
+                var lista = repositorioContrato.ObtenerContratosVigentes();
+                return View("Index", lista);
+            }
+            catch(SqlException ex)
+            {
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                return RedirectToAction(nameof(Index), "Home");
+            }
         }
 
         public ActionResult PorInmueble(int id)
         {
             var lista = repositorioContrato.ObtenerPorInmueble(id);
+            ViewBag.Id = id;
+
+            return View("Index", lista);
+        }
+
+        public ActionResult PorInquilino(int id)
+        {
+            var lista = repositorioContrato.ObtenerPorInquilino(id);
             ViewBag.Id = id;
 
             return View("Index", lista);
