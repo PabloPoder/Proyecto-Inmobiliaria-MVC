@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    Contrato contrato = (Contrato)ViewBag.Contrato;
 }
 
 <h1>Create</h1>
@@ -10,28 +11,37 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="ContratoId" class="control-label"></label>
+            <input disabled readonly asp-for="ContratoId" value="@contrato.Id" class="form-control" />
+            <span asp-validation-for="ContratoId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Contrato.Inmueble.Direccion" class="control-label"></label>
+            <input disabled readonly asp-for="Contrato.Inmueble.Direccion" value="@contrato.Inmueble.Direccion" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Inquilino</label>
+            <input disabled readonly asp-for="Contrato.Inquilino.Nombre" value="@contrato.Inquilino.Nombre @contrato.Inquilino.Apellido" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Contrato.Inmueble.Precio" class="control-label"></label>
+            <input disabled readonly asp-for="Contrato.Inmueble.Precio" value="@contrato.Inmueble.Precio $ARS" class="form-control" />
+        </div>
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ContratoId" class="control-label"></label>
-                <input asp-for="ContratoId" class="form-control" />
-                <span asp-validation-for="ContratoId" class="text-danger"></span>
+                <label asp-for="FechaPago" class="control-label"></label> 
+                <input readonly asp-for="FechaPago" class="form-control" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
             </div>
             <div class="form-group">
-                <label asp-for="FechaPago" class="control-label"></label>
-                <input asp-for="FechaPago" class="form-control" />
-                <span asp-validation-for="FechaPago" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-success" />
+                <a asp-action="ObtenerPagos" asp-route-id="@contrato.Id" class="btn btn-outline-warning">Volver a la Lista</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Volver a la Lista</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

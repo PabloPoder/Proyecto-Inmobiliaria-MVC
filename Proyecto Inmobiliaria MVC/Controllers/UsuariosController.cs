@@ -83,7 +83,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                     if(usuario == null || usuario.Clave != hashed)
                     {
                         ModelState.AddModelError("", "El email o la clave no son correctos");
-                        TempData["returnUrl"] = returnUrl;
+                        /*TempData["returnUrl"] = returnUrl;*/
                         return View();
                     }
 
@@ -112,12 +112,6 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 ModelState.AddModelError("", ex.Message);
                 return View();
             }
-        }
-
-        // GET: PersonasController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         // GET: Usuarios/Perfil/5
@@ -188,7 +182,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             try
             {
                 usuario.Id = id;
+
+                usuario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                            password: usuario.Clave,
+                            salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                            prf: KeyDerivationPrf.HMACSHA1,
+                            iterationCount: 1000,
+                            numBytesRequested: 256 / 8));
+
                 repositorioUsuario.Modificacion(usuario);
+
                 return RedirectToAction(nameof(Index));
             }
             catch (SqlException ex)
@@ -203,7 +206,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         public ActionResult Delete(int id)
         {
             repositorioUsuario.Baja(id);
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: UsuarioController/Delete/5
@@ -218,7 +221,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction(nameof(Index));
             }
         }
     }

@@ -147,7 +147,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
-                    $"inmuebles.Direccion, inmuebles.Ambientes " +
+                    $"inmuebles.Direccion, inmuebles.Ambientes, inmuebles.Precio " +
                     $"FROM Contratos contrato " +
                     $"INNER JOIN Inquilinos inquilinos ON contrato.InquilinoId = inquilinos.id " +
                     $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmuebles.id WHERE contrato.id = @id AND contrato.Estado = 1;";
@@ -179,6 +179,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                                 Id = reader.GetInt32(4),
                                 Direccion = reader.GetString(7),
                                 Ambientes = reader.GetInt32(8),
+                                Precio = reader.GetDecimal(9),
                             }
                         };
                     }

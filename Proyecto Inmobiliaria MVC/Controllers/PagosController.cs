@@ -13,17 +13,20 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
     public class PagosController : Controller
     {
         RepositorioPago repositorioPago;
+        RepositorioContrato repositorioContrato;
         private IConfiguration configuration;
 
         public PagosController(IConfiguration configuration)
         {
             repositorioPago = new RepositorioPago(configuration);
+            repositorioContrato = new RepositorioContrato(configuration);
             this.configuration = configuration;
         }
 
         // GET: PagosController
         public ActionResult Index()
         {
+
             return View();
         }
 
@@ -37,6 +40,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: PagosController/Create
         public ActionResult Create(int id)
         {
+            ViewBag.Contrato = repositorioContrato.ObtenerPorId(id);
             return View();
         }
 
@@ -51,12 +55,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 {
                     pago.ContratoId = id;
                     repositorioPago.Alta(pago);
-                    return RedirectToAction(nameof(Index));
+
+                    var lista = repositorioPago.ObtenerTodos(id);
+                    return View("Index", lista);
                 }
                 else
                 {
-                    ViewBag.Pagos = repositorioPago.ObtenerTodos(id);
-                    return View(pago);
+                    
+                    return View();
                 }
 
             }

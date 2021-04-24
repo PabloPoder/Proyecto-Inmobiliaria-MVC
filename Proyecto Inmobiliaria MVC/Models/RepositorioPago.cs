@@ -21,8 +21,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"INSERT INTO Pagos (FechaPago, ContratoId) " +
-                             $"VALUES (@FechaDePago, @ContratoId); " +
-                             $"SELCET SCOPE_IDENTITY()"; // devuelve el id insertado
+                             $"VALUES (@FechaPago, @ContratoId); " +
+                             $"SELECT SCOPE_IDENTITY()"; // devuelve el id insertado
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -47,7 +47,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT pago.id, FechaPago, ContratoId, FechaPago, contrato.InmuebleId, inmueble.Precio " +
+                string sql = $"SELECT pago.id, FechaPago, ContratoId, contrato.InmuebleId, inmueble.Precio " +
                     $"FROM Pagos pago " +
                     $"INNER JOIN Contratos contrato ON pago.ContratoId = contrato.id " +
                     $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id " +

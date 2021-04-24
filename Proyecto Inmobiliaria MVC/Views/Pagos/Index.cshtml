@@ -7,8 +7,7 @@
 <h1>Pagos</h1>
 
 <p>
-    @Html.ActionLink("Crear", "Create", new { id = ViewBag.ContratoId })
-
+    <a asp-action="Create" asp-route-id="@ViewBag.ContratoId" title="Pagos" class="btn btn-info">Crear Pago</a>
 </p>
 <table class="table">
     <thead>
@@ -22,7 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ContratoId)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contrato.Inmueble.Precio)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -39,7 +40,7 @@
                     @Html.DisplayFor(modelItem => item.ContratoId)
                 </td>
                 <td>
-                    @Html.ActionLink("Delete", "Delete", new { Id = item.Id }) |
+                    @Html.DisplayFor(modelItem => item.Contrato.Inmueble.Precio) $ARS
                 </td>
             </tr>
         }

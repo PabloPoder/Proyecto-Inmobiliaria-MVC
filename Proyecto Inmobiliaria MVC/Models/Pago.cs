@@ -13,6 +13,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public int Id { get; set; }
         [Required]
         [Display(Name = "Fecha de Pago")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaPago { get; set; }
         [Required]
         [Display(Name = "Código Contrato")]
