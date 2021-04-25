@@ -36,7 +36,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                ViewData["Error"] = TempData["Error"];
+                // ViewData["Error"] = TempData["Error"];
 
                 var lista = repositorioUsuario.ObtenerTodos();
 
@@ -209,7 +209,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 var usuarioActual = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
                 if (usuarioActual.Id != id)
                 {//si no es admin, solo puede modificarse él mismo
-                    TempData["Error"] = "Solo puedes modificar tu perfil";
+                    // TempData["Error"] = "Solo puedes modificar tu perfil";
                     return RedirectToAction(nameof(Index), "Home");
                 }
             }

@@ -76,7 +76,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"UPDATE Usuarios SET Nombre = @nombre, Apellido = @apellido, " +
-                    $"Email = @email, Clave = @clave, Rol = @rol " +
+                    $"Email = @email, Clave = @clave, Rol = @rol, Avatar = @Avatar " +
                     $"WHERE id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -88,6 +88,10 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@email", usuario.Email);
                     command.Parameters.AddWithValue("@clave", usuario.Clave);
                     command.Parameters.AddWithValue("@rol", usuario.Rol);
+                    if (String.IsNullOrEmpty(usuario.Avatar))
+                        command.Parameters.AddWithValue("@avatar", "");
+                    else
+                        command.Parameters.AddWithValue("@avatar", usuario.Avatar);
 
                     connection.Open();
                     res = command.ExecuteNonQuery();
