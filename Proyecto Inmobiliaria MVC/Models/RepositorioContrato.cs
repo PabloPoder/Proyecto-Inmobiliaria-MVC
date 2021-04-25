@@ -246,7 +246,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
-                    $"inmuebles.Direccion, inmuebles.Ambientes " +
+                    $"inmuebles.Direccion, inmuebles.Ambientes, inmuebles.precio" +
                     $"FROM Contratos contrato " +
                     $"INNER JOIN Inquilinos inquilinos ON contrato.InquilinoId = inquilinos.id " +
                     $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmuebles.id WHERE InquilinoId = @id AND contrato.Estado = 1;";
@@ -278,6 +278,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                                 Id = reader.GetInt32(4),
                                 Direccion = reader.GetString(7),
                                 Ambientes = reader.GetInt32(8),
+                                Precio = reader.GetDecimal(9),
                             }
                         };
                         res.Add(contrato);
@@ -295,7 +296,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilino.Nombre, inquilino.Apellido, " +
-                    $"inmueble.Direccion, inmueble.Ambientes " +
+                    $"inmueble.Direccion, inmueble.Ambientes, inmueble.Precio " +
                     $"FROM Contratos contrato " +
                     $"INNER JOIN Inquilinos inquilino ON contrato.InquilinoId = inquilino.id AND inquilino.Estado = 1 " +
                     $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id AND inmueble.Estado = 1 " +
@@ -328,6 +329,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                                 Id = reader.GetInt32(4),
                                 Direccion = reader.GetString(7),
                                 Ambientes = reader.GetInt32(8),
+                                Precio = reader.GetDecimal(9)
                             }
                         };
                         res.Add(contrato);
