@@ -75,6 +75,20 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             return View("Index", lista);
         }
 
+        public ActionResult BuscarPorFechas(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            try
+            {
+                var lista = repositorioContrato.ContratosPorFechas(fechaDesde, fechaHasta);
+                return View("Index", lista);
+            }
+            catch (SqlException ex)
+            {
+
+                return View("Index");
+            }
+        }
+
         // GET: ContratosController/Create
         public ActionResult Create()
         {

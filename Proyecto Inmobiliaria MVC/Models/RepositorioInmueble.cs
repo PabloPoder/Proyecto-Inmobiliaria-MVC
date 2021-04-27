@@ -232,6 +232,59 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return res;
         }
 
-        
+        // Dadas dos fechas posibles de un contrato(inicio y fin), listar todos los inmuebles que no estén ocupados en algún contrato entre esas fechas.
+        public List<Contrato> ObtenerInmueblesPorFechas(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            List<Contrato> res = new List<Contrato>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT inmueble.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilino.Nombre, inquilino.Apellido, " +
+                    $"inmueble.Direccion, inmueble.Ambientes, inmueble.Precio, contrato.FechaHasta, contrato.FechaDesde " +
+                    $"FROM Inmuebles inmueble " +
+                    $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id AND propietario.Estado = 1 " +
+                    $"INNER JOIN Contratos contrato ON contrato.InmuebleId = inmueble.id" +
+                    $"WHERE inmueble.Estado = 1 AND (FechaHasta < @fechaDesde && FechaDesde > @fechaHasta);";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("FechaDesde", fechaDesde);
+                    command.Parameters.AddWithValue("FechaHasta", fechaHasta);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Contrato contrato = new Contrato
+                        {
+                            Id = reader.GetInt32(0),
+                            FechaDesde = reader.GetDateTime(1),
+                            FechaHasta = reader.GetDateTime(2),
+                            InquilinoId = reader.GetInt32(3),
+                            InmuebleId = reader.GetInt32(4),
+                            Inquilino = new Inquilino
+                            {
+                                Id = reader.GetInt32(3),
+                                Nombre = reader.GetString(5),
+                                Apellido = reader.GetString(6),
+                            },
+                            Inmueble = new Inmueble
+                            {
+                                Id = reader.GetInt32(4),
+                                Direccion = reader.GetString(7),
+                                Ambientes = reader.GetInt32(8),
+                                Precio = reader.GetDecimal(9)
+                            }
+                        };
+                        res.Add(contrato);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
+
     }
 }

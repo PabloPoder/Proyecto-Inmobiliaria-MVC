@@ -352,11 +352,16 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     $"INNER JOIN Inquilinos inquilino ON contrato.InquilinoId = inquilino.id AND inquilino.Estado = 1 " +
                     $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id AND inmueble.Estado = 1 " +
                     $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id AND propietario.Estado = 1 " +
-                    $"WHERE contrato.Estado = 1 AND (FechaDesde >= @fechaDesde && FechaHasta <= @fechaHasta) ;";
+                    $"WHERE contrato.Estado = 1 AND " +
+                    $"(FechaHasta >= @fechaDesde AND Fechahasta <= @fechaHasta) OR " +
+                    $"(FechaHasta <= @fechaHasta AND FechaDesde >= @fechaDesde) OR" +
+                    $"(FechaDesde <= @fechaDesde AND FechaHasta >= @fechaHasta); ";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@fechaDesde", fechaDesde);
+                    command.Parameters.AddWithValue("@fechaHasta", fechaHasta);
                     connection.Open();
                     var reader = command.ExecuteReader();
 
@@ -390,5 +395,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             }
             return res;
         }
+
+
     }
 }
