@@ -32,17 +32,10 @@
                 <input asp-for="Clave" class="form-control" />
                 <span asp-validation-for="Clave" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-                <label asp-for="Avatar" class="control-label"></label><br />
-                @if (Model.Avatar != "")
-                {
-                    <img width="38"src="@Model.Avatar" />
-                }
-                else
-                {
-                    <input disabled readonly value="Sin Avatar" class="form-control" />
-                }
+                <label asp-for="AvatarFile" class="control-label"></label>
+                <input type="file" name="AvatarFile" />
+                <span asp-validation-for="AvatarFile" class="text-danger"></span>
             </div>
 
             @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
@@ -58,10 +51,10 @@
                     <span asp-validation-for="Rol" class="text-danger"></span>
                 </div>
             }
-        <div class="form-group">
-            <input type="submit" value="Guardar" class="btn btn-success" />
-            <a asp-action="Index" class="btn btn-outline-warning">Volver a la Vista</a>
-        </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-outline-warning">Volver a la Vista</a>
+            </div>
         </form>
     </div>
 </div>

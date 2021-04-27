@@ -174,6 +174,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                         repositorioUsuario.Modificacion(usuario);
                     }
 
+                    
+
+
                     return RedirectToAction(nameof(Index));
 
                 }
@@ -204,21 +207,13 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Usuario usuario)
         {
-            if (!User.IsInRole("Administrador"))
-            {
-                var usuarioActual = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
-                if (usuarioActual.Id != id)
-                {//si no es admin, solo puede modificarse él mismo
-                    // TempData["Error"] = "Solo puedes modificar tu perfil";
-                    return RedirectToAction(nameof(Index), "Home");
-                }
-            }
-            else
+            var usuarioActual = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
+
+            if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador") || usuarioActual.Id == id)
             {
                 try
                 {
                     usuario.Id = id;
-
                     usuario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                                 password: usuario.Clave,
                                 salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
@@ -226,8 +221,32 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                                 iterationCount: 1000,
                                 numBytesRequested: 256 / 8));
 
-                    repositorioUsuario.Modificacion(usuario);
+                    if (usuario.AvatarFile != null && usuario.Id > 0)
+                    {
+                        string wwwPath = environment.WebRootPath;
+                        string path = Path.Combine(wwwPath, "Uploads");
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        //Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
+                        string fileName = "avatar_" + usuario.Id + Path.GetExtension(usuario.AvatarFile.FileName);
+                        string pathCompleto = Path.Combine(path, fileName);
+                        usuario.Avatar = Path.Combine("/Uploads", fileName);
+                        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                        {
+                            usuario.AvatarFile.CopyTo(stream);
+                        }
+                        repositorioUsuario.Modificacion(usuario);
+                    }
+                    else
+                    {
+                        var usuarioOriginal = repositorioUsuario.ObtenerPorId(usuario.Id);
+                        usuario.Avatar = usuarioOriginal.Avatar;
+                        repositorioUsuario.Modificacion(usuario);
+                    }
 
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (SqlException ex)
                 {
@@ -235,9 +254,10 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return RedirectToAction(nameof(Index));
-
-
+            else
+            {
+                return RedirectToAction(nameof(Index), "Home");
+            }
         }
 
         [Authorize(Policy = "Administrador")]

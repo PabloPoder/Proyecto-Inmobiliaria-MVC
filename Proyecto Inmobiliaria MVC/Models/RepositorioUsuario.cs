@@ -89,9 +89,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@clave", usuario.Clave);
                     command.Parameters.AddWithValue("@rol", usuario.Rol);
                     if (String.IsNullOrEmpty(usuario.Avatar))
-                        command.Parameters.AddWithValue("@avatar", "");
+                        command.Parameters.AddWithValue("@Avatar", "");
                     else
-                        command.Parameters.AddWithValue("@avatar", usuario.Avatar);
+                        command.Parameters.AddWithValue("@Avatar", usuario.Avatar);
 
                     connection.Open();
                     res = command.ExecuteNonQuery();

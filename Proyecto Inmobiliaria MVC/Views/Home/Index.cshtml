@@ -7,6 +7,10 @@
     <p>Sea bienvenido a la pagina oficial de la Imobiliaria Poder</p>
 </div>
 
+
+
+
+
 @if (!User.Identity.IsAuthenticated)
 {
     await Html.RenderPartialAsync("_Login", new LoginView());
