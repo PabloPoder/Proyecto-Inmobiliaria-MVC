@@ -49,8 +49,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"UPDATE Pagos SET FechaPago = @FechaPago, ContratoId = @ContratoId, " +
-                    $"Estado = @Estado " +
+                string sql = $"UPDATE Pagos SET FechaPago = @FechaPago, ContratoId = @ContratoId " +
                     $"WHERE id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -59,7 +58,6 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@id", pago.Id);
                     command.Parameters.AddWithValue("@FechaPago", pago.FechaPago);
                     command.Parameters.AddWithValue("@ContratoId", pago.ContratoId);
-                    command.Parameters.AddWithValue("@Estado", pago.Estado);
 
                     connection.Open();
                     res = command.ExecuteNonQuery();

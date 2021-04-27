@@ -246,7 +246,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT contrato.id, FechaDesde, FechaHasta, InquilinoId, InmuebleId, inquilinos.Nombre, inquilinos.Apellido, " +
-                    $"inmuebles.Direccion, inmuebles.Ambientes, inmuebles.precio" +
+                    $"inmuebles.Direccion, inmuebles.Ambientes, inmuebles.precio " +
                     $"FROM Contratos contrato " +
                     $"INNER JOIN Inquilinos inquilinos ON contrato.InquilinoId = inquilinos.id " +
                     $"INNER JOIN Inmuebles inmuebles ON contrato.InmuebleId = inmuebles.id WHERE InquilinoId = @id AND contrato.Estado = 1;";
