@@ -31,8 +31,8 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
+                ViewBag.Error = TempData["Error"];
                 var lista = repositorioInmueble.ObtenerTodos();
-                ViewData[nameof(Inmueble)] = lista;
                 return View(lista);
             }
             catch (SqlException ex)
@@ -121,7 +121,8 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             catch (SqlException ex)
             {
                 TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                var lista = repositorioInmueble.ObtenerTodos();
+                return View("Index");
             }
         }
 
@@ -139,6 +140,30 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             {
                 TempData["Error"] = "Ocurrio un error " + ex.ToString();
                 return RedirectToAction(nameof(Index));
+            }
+        }
+
+        public ActionResult BuscarPorFechas(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            try
+            {
+                if (fechaDesde < fechaHasta)
+                {
+                    var lista = repositorioInmueble.ObtenerInmueblesPorFechas(fechaDesde, fechaHasta);
+                    return View("Index", lista);
+                }
+                else
+                {
+                    TempData["Error"] = "Error al filtrar inmuebles, asegurese de ingresar bien las fechas.";
+                    var lista = repositorioInmueble.ObtenerTodos();
+                    return View("Index", lista);
+                }
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "Error al filtrar inmuebles.";
+                var lista = repositorioInmueble.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 

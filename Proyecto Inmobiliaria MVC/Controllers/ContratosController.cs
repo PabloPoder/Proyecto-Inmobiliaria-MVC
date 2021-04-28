@@ -54,7 +54,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch(SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                TempData["Error"] = "Ocurrio un error " + ex.ToString();TempData["Error"] = "Ocurrio un error " + ex.ToString();
                 return RedirectToAction(nameof(Index), "Home");
             }
         }

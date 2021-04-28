@@ -353,9 +353,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     $"INNER JOIN Inmuebles inmueble ON contrato.InmuebleId = inmueble.id AND inmueble.Estado = 1 " +
                     $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id AND propietario.Estado = 1 " +
                     $"WHERE contrato.Estado = 1 AND " +
-                    $"(FechaHasta >= @fechaDesde AND Fechahasta <= @fechaHasta) OR " +
-                    $"(FechaHasta <= @fechaHasta AND FechaDesde >= @fechaDesde) OR" +
-                    $"(FechaDesde <= @fechaDesde AND FechaHasta >= @fechaHasta); ";
+                    $"((FechaHasta >= @fechaDesde AND FechaHasta <= @fechaHasta) OR " +
+                    $"(FechaDesde <= @fechaHasta AND FechaDesde >= @fechaDesde) OR" +
+                    $"(FechaDesde <= @fechaDesde AND FechaHasta >= @fechaHasta)); ";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
