@@ -302,18 +302,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, " +
                     $"propietario.Nombre, propietario.Apellido, propietario.Estado " +
                     $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
-                    $"INNER JOIN Contratos contrato ON contrato.InmuebleId = inmueble.id " +
-                    $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1 AND inmueble.Id " +
-                    $"IN " +
-                    $"(SELECT InmuebleId  From Contratos WHERE(FechaDesde > @fechaHasta OR FechaHasta < @fechaDesde))" +
-                    $"UNION " +
-                    $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, " +
-                    $"propietario.Nombre, propietario.Apellido, propietario.Estado " +
-                    $"FROM Inmuebles inmueble " +
-                    $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id " +
-                    $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1 AND  inmueble.Id " +
-                    $"NOT IN (SELECT InmuebleId FROM Contratos WHERE Estado = 1)";
-
+                    
+                
                 //MEJORAR CONSULTA SI HAY TIEMPO...
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
