@@ -93,7 +93,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         public ActionResult Create()
         {
             ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodosSinContrato();
             return View();
         }
 

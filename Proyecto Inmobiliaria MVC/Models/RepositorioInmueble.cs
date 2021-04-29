@@ -152,6 +152,53 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return res;
         }
 
+        public List<Inmueble> ObtenerTodosSinContrato()
+        {
+            List<Inmueble> res = new List<Inmueble>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, Foto, " +
+                    $"propietario.Nombre, propietario.Apellido, propietario.Estado " +
+                    $"FROM Inmuebles inmueble " +
+                    $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
+                    $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1 AND inmueble.Id NOT IN(SELECT InmuebleId FROM Contratos WHERE Estado = 1)";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Inmueble inmueble = new Inmueble
+                        {
+                            Id = reader.GetInt32(0),
+                            Direccion = reader.GetString(1),
+                            Ambientes = reader.GetInt32(2),
+                            Superficie = reader.GetInt32(3),
+                            Latitud = reader.GetDecimal(4),
+                            Longitud = reader.GetDecimal(5),
+                            Precio = reader.GetDecimal(6),
+                            Estado = reader.GetBoolean(7),
+                            PropietarioId = reader.GetInt32(8),
+                            Foto = reader.GetString(9),
+                            Propietario = new Propietario
+                            {
+                                Id = reader.GetInt32(8),
+                                Nombre = reader.GetString(10),
+                                Apellido = reader.GetString(11),
+                            }
+                        };
+                        res.Add(inmueble);
+                    }
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         public Inmueble ObtenerPorId(int id)
         {
             Inmueble inmueble = null;
@@ -245,6 +292,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
         // Dadas dos fechas posibles de un contrato(inicio y fin), listar todos los inmuebles que no estén ocupados en algún contrato entre esas fechas.
         //Falta testeo
+        /*
         public List<Inmueble> ObtenerInmueblesPorFechas(DateTime fechaDesde, DateTime fechaHasta)
         {
             List<Inmueble> res = new List<Inmueble>();
@@ -265,6 +313,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id " +
                     $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1 AND  inmueble.Id " +
                     $"NOT IN (SELECT InmuebleId FROM Contratos WHERE Estado = 1)";
+
+                //MEJORAR CONSULTA SI HAY TIEMPO...
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -300,7 +350,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 }
             }
             return res;
-        }
+        }*/
         
 
 
