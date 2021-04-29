@@ -28,20 +28,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
+                ViewBag.Error = TempData["Error"];
                 var lista = repositorioInquilino.ObtenerTodos();
-                ViewData[nameof(Inquilino)] = lista;
                 return View(lista);
             }
             catch (Exception ex)
             {
-                throw;
+                TempData["Error"] = "Ocurrio un error al intentar ingresar al menu de inquilinos.";
+                var lista = repositorioInquilino.ObtenerTodos();
+                return View("Index", "Home");
             }
-        }
-
-        // GET: InquilinoController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         // GET: InquilinoController/Create
@@ -70,8 +66,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex) 
             {
-                ViewBag.Error = "Ocurrio un error " + ex.Message;
-                return View(inquilino);
+                TempData["Error"] = "Ocurrio un error al intentar crear un inquilino.";
+                var lista = repositorioInquilino.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -97,8 +94,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar editar un inquilino.";
+                var lista = repositorioInquilino.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -113,8 +111,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar borrar un inquilino.";
+                var lista = repositorioInquilino.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -130,8 +129,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar borrar un inquilino.";
+                var lista = repositorioInquilino.ObtenerTodos();
+                return View("Index", lista);
             }
         }
     }

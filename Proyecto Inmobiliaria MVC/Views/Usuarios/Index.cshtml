@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Proyecto_Inmobiliaria_MVC.Models.Usuario>
 
 @{
-    ViewData["Title"] = "Menu";
+    ViewData["Title"] = "Usuarios";
 }
 
 <h1>Usuarios</h1>
@@ -49,7 +49,14 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                <img width="38" src="@item.Avatar" />
+                @if (item.Avatar != "")
+                {
+                    <img width="38" src="@item.Avatar" />
+                }
+                else
+                {
+                    <p>Sin foto</p>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RolNombre)

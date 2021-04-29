@@ -27,15 +27,32 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: PagosController
         public ActionResult Index()
         {
+            try
+            {
+                ViewBag.Error = TempData["Error"];
+                return View();
+            }
+            catch (Exception)
+            {
 
-            return View();
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public ActionResult ObtenerPagos(int id)
         {
-            var lista = repositorioPago.ObtenerTodos(id);
-            ViewBag.ContratoId = id;
-            return View("Index", lista);
+            try
+            {
+                var lista = repositorioPago.ObtenerTodos(id);
+                ViewBag.ContratoId = id;
+                return View("Index", lista);
+            }
+            catch (Exception)
+            {
+
+                TempData["Error"] = "Ocurrio un error al intentar ingresar al menu de pagos.";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         // GET: PagosController/Create
@@ -66,15 +83,17 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 }
                 else
                 {
-                    
+                    TempData["Error"] = "Ocurrio un error al intentar crear un pago.";
+                    var lista = repositorioPago.ObtenerTodos(id);
                     return View();
                 }
 
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar crear un pago.";
+                var lista = repositorioPago.ObtenerTodos(id);
+                return View("Index", lista);
             }
         }
 
@@ -113,8 +132,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar crear un pago.";
+                return RedirectToAction("Index", "Contratos");
+
             }
         }
 
@@ -125,16 +145,13 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             try
             {
                 repositorioPago.Baja(id);
-
-                var lista = repositorioPago.ObtenerTodos(idContrato);
-
-
-                return View("Index", lista);
+                return RedirectToAction("Index", "Contratos");
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar borrar un pago.";
+                var lista = repositorioPago.ObtenerTodos(idContrato);
+                return View("Index", lista);
             }
         }
 

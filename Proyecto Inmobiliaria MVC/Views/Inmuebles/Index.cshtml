@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Proyecto_Inmobiliaria_MVC.Models.Inmueble>
 
 @{
-    ViewData["Title"] = "Inmueble";
+    ViewData["Title"] = "Inmuebles";
 }
 
-<h1>Inmueble</h1>
+<h1>Inmuebles</h1>
 
 <p>
     <!-- Button trigger modal -->
@@ -78,7 +78,14 @@
                     @(item.Propietario.Nombre + " " + item.Propietario.Apellido)
                 </td>
                 <td>
-                    <img title="@item.Direccion" width="80" src="@item.Foto" />
+                    @if (item.Foto != "")
+                    {
+                        <img title="@item.Direccion" width="80" src="@item.Foto" />
+                    }
+                    else
+                    {
+                        <p>Sin foto</p>
+                    }
                 </td>
                 <td>
                     <a asp-action="PorInmueble" asp-controller="Contratos" asp-route-id="@item.Id" title="Contratos">

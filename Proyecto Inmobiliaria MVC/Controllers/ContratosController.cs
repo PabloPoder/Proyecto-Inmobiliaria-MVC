@@ -35,13 +35,15 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
+                ViewBag.Error = TempData["Error"];
                 var lista = repositorioContrato.ObtenerTodos();
-                ViewData[nameof(Contrato)] = lista;
                 return View(lista);
             }
             catch (Exception ex)
             {
-                return RedirectToAction(nameof(Index), "Home");
+
+                TempData["Error"] = "Error al ingresar al menu de contratos.";
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -54,25 +56,43 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch(SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index), "Home");
+                TempData["Error"] = "Ocurrio un error al intentar obtener contrato vigentes.";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
         public ActionResult PorInmueble(int id)
         {
-            var lista = repositorioContrato.ObtenerPorInmueble(id);
-            ViewBag.Id = id;
+            try
+            {
+                var lista = repositorioContrato.ObtenerPorInmueble(id);
+                ViewBag.Id = id;
+                return View("Index", lista);
 
-            return View("Index", lista);
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrio un error al intentar obtener contrato por inmuebles.";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
+            }
         }
 
         public ActionResult PorInquilino(int id)
         {
-            var lista = repositorioContrato.ObtenerPorInquilino(id);
-            ViewBag.Id = id;
-
-            return View("Index", lista);
+            try
+            {
+                var lista = repositorioContrato.ObtenerPorInquilino(id);
+                ViewBag.Id = id;
+                return View("Index", lista);
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrio un error al intentar obtener contrato por inquilinos.";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
+            }
         }
 
         public ActionResult BuscarPorFechas(DateTime fechaDesde, DateTime fechaHasta)
@@ -84,8 +104,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-
-                return View("Index");
+                TempData["Error"] = "Ocurrio un error al intentar buscar por fechas.";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -109,9 +130,8 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                ViewBag.Error = "Ocurrio un error " + ex.Message;
+                ViewBag.Error = "Ocurrio un error al intentar crear un contrato.";
                 return View(contrato);
-
             }
         }
 
@@ -138,8 +158,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar editar un contrato.";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -154,8 +175,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar borrar un usuario. ";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 

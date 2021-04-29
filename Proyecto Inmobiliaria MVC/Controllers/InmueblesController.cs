@@ -41,17 +41,26 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar cargar el menu de inmuebles.";
+                return RedirectToAction("Index", "Home");
             }
         }
 
         public ActionResult PorPropietario(int id)
         {
-            var lista = repositorioInmueble.ObtenerPorPropietario(id);
-            ViewBag.Id = id;
+            try
+            {
+                var lista = repositorioInmueble.ObtenerPorPropietario(id);
+                ViewBag.Id = id;
 
-            return View("Index", lista);
+                return View("Index", lista);
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrio un error al intentar cargar inmuebles por propietarios.";
+                var lista = repositorioInmueble.ObtenerTodos();
+                return View("Index", lista);
+            }
         }
 
         // GET: Inmueble/Create
@@ -91,7 +100,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                         repositorioInmueble.Modificacion(inmueble);
                     }
 
-                    return RedirectToAction(nameof(Index));
+                    TempData["Error"] = "Ocurrio un error al intentar crear un inmueble.";
+                    var lista = repositorioInmueble.ObtenerTodos();
+                    return View("Index", lista);
                 }
                 else
                 {
@@ -102,8 +113,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar crear un inmueble.";
+                var lista = repositorioInmueble.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -149,7 +161,8 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                         repositorioInmueble.Modificacion(inmueble);
                     }
 
-                    return RedirectToAction(nameof(Index));
+                    var lista = repositorioInmueble.ObtenerTodos();
+                    return View("Index", lista);
                 }
                 else
                 {
@@ -160,8 +173,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar editar un inmueble.";
+                var lista = repositorioInmueble.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -176,9 +190,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
+                TempData["Error"] = "Ocurrio un error al intentar borrar un inmueble.";
                 var lista = repositorioInmueble.ObtenerTodos();
-                return View("Index");
+                return View("Index", lista);
             }
         }
 
@@ -194,12 +208,13 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar borrar un inmueble.";
+                var lista = repositorioInmueble.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
-        /*
+        /* Para implementar
         public ActionResult BuscarPorFechas(DateTime fechaDesde, DateTime fechaHasta)
         {
             try

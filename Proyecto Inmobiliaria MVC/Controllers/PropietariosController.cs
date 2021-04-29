@@ -29,21 +29,17 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
+                ViewBag.Error = TempData["Error"];
                 var lista = repositorioPropietario.ObtenerTodos();
-                ViewData[nameof(Propietario)] = lista;
                 return View(lista);
             }
             catch (Exception ex)
             {
-                throw;
+                TempData["Error"] = "Ocurrio un error al intentar ingresar al menu de propietarios.";
+                return RedirectToAction("Index", "Home");
             }
         }
 
-        // GET: PersonasController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
         // GET: PersonasController/Create
         public ActionResult Create() 
@@ -70,8 +66,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar crear un propietario.";
+                var lista = repositorioPropietario.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -96,8 +93,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar editar un propietario.";
+                var lista = repositorioPropietario.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -112,8 +110,9 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index));
+                TempData["Error"] = "Ocurrio un error al intentar borrar un propietario.";
+                var lista = repositorioPropietario.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 

@@ -85,7 +85,6 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@dni", inquilino.Dni);
                     command.Parameters.AddWithValue("@telefono", inquilino.Telefono);
                     command.Parameters.AddWithValue("@email", inquilino.Email);
-                    command.Parameters.AddWithValue("@id", inquilino.Id);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();

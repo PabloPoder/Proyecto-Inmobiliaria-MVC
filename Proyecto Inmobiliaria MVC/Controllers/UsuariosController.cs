@@ -36,16 +36,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                // ViewData["Error"] = TempData["Error"];
-
+                ViewData["Error"] = TempData["Error"];
                 var lista = repositorioUsuario.ObtenerTodos();
-
                 return View(lista);
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                return RedirectToAction(nameof(Index), "Home");
+                TempData["Error"] = "Ocurrio un error al intentar ingresar al menu de usuarios.";
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -106,25 +104,36 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity));
 
-                    TempData.Remove("returnUrl");
+                    //TempData.Remove("returnUrl");
                     return Redirect(returnUrl);
                 }
-                TempData["returnUrl"] = returnUrl;
+                //TempData["returnUrl"] = returnUrl;
                 return View();
             }
             catch(Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View();
+                TempData["Error"] = "Ocurrio un error al intentar logearse.";
+                var lista = repositorioUsuario.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
         // GET: Usuarios/Perfil/5
         public ActionResult Perfil()
         {
-            var usuario = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
-            ViewBag.Roles = Usuario.ObtenerRoles();
-            return View("Edit", usuario);
+            try
+            {
+                var usuario = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
+                ViewBag.Roles = Usuario.ObtenerRoles();
+                return View("Edit", usuario);
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrio un error al intentar editar el usuario.";
+                var lista = repositorioUsuario.ObtenerTodos();
+                return View("Index", lista);
+            }
+            
         }
 
 
@@ -179,13 +188,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ViewBag.Roles = Usuario.ObtenerRoles();
-                    TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                    return RedirectToAction(nameof(Index));
+                    TempData["Error"] = "Ocurrio un error al intentar crear un usuario.";
+                    var lista = repositorioUsuario.ObtenerTodos();
+                    return View("Index", lista);
                 }
             }
             else
             {
+                TempData["Error"] = "Ocurrio un error al intentar editar el usuario.";
                 return View();
             }
            
@@ -247,13 +257,16 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    TempData["Error"] = "Ocurrio un error " + ex.ToString();
-                    return RedirectToAction(nameof(Index));
+                    TempData["Error"] = "Ocurrio un error al intentar editar el usuario.";
+                    var lista = repositorioUsuario.ObtenerTodos();
+                    return View("Index", lista);
                 }
             }
             else
             {
-                return RedirectToAction(nameof(Index), "Home");
+                TempData["Error"] = "Ocurrio un error al intentar editar el usuario.";
+                var lista = repositorioUsuario.ObtenerTodos();
+                return View("Index", lista);
             }
         }
 
@@ -261,8 +274,19 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         // GET: UsuarioController/Delete/5
         public ActionResult Delete(int id)
         {
-            repositorioUsuario.Baja(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                repositorioUsuario.Baja(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+
+                TempData["Error"] = "Ocurrio un error al intentar borrar el usuario.";
+                var lista = repositorioUsuario.ObtenerTodos();
+                return View("Index", lista);
+            }
+            
         }
 
         // POST: UsuarioController/Delete/5
