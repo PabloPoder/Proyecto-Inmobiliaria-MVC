@@ -27,6 +27,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         [Required, DataType(DataType.Password)]
         public string Clave{ get; set; }
         public string Avatar { get; set; }
+        [Display(Name = "Avatar")]
         public IFormFile AvatarFile { get; set; }
         public bool Estado { get; set; }
         public int Rol { get; set; }

@@ -36,6 +36,14 @@
                 <label asp-for="AvatarFile" class="control-label"></label>
                 <input type="file" name="AvatarFile" />
                 <span asp-validation-for="AvatarFile" class="text-danger"></span>
+                @if (Model.Avatar != "")
+                {
+                    <img width="38" src="@Model.Avatar" />
+                }
+                else
+                {
+                    <p>Sin foto</p>
+                }
             </div>
 
             @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))

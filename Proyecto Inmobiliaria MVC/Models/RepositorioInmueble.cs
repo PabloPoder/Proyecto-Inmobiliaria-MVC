@@ -21,8 +21,8 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"INSERT INTO Inmuebles (Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId) " +
-                    $"VALUES (@direccion, @ambientes, @superficie, @latitud, @longitud, @precio, @propietarioId); " +
+                string sql = $"INSERT INTO Inmuebles (Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, Foto) " +
+                    $"VALUES (@direccion, @ambientes, @superficie, @latitud, @longitud, @precio, @propietarioId, @Foto); " +
                     "SELECT SCOPE_IDENTITY();"; // devuelve el id insertado (LAST_INSERT_ID para mysql)
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -35,6 +35,10 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@propietarioId", inmueble.PropietarioId);
+                    if (String.IsNullOrEmpty(inmueble.Foto))
+                        command.Parameters.AddWithValue("@Foto", "");
+                    else
+                        command.Parameters.AddWithValue("@Foto", inmueble.Foto);
 
                     connection.Open();
 
@@ -76,7 +80,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             {
                 string sql = $"UPDATE Inmuebles SET Direccion = @direccion, Ambientes = @ambientes, " +
                     $"superficie = @superficie, Latitud = @latitud, Longitud = @longitud, Precio = @precio, " +
-                    $"PropietarioId = @propietarioId " +
+                    $"PropietarioId = @propietarioId, Foto = @Foto " +
                     $"WHERE id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -90,6 +94,10 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                     command.Parameters.AddWithValue("@longitud", inmueble.Longitud);
                     command.Parameters.AddWithValue("@precio", inmueble.Precio);
                     command.Parameters.AddWithValue("@propietarioId", inmueble.PropietarioId);
+                    if (String.IsNullOrEmpty(inmueble.Foto))
+                        command.Parameters.AddWithValue("@Foto", "");
+                    else
+                        command.Parameters.AddWithValue("@Foto", inmueble.Foto);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();
@@ -104,7 +112,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, " +
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, Foto, " +
                     "propietario.Nombre, propietario.Apellido, propietario.Estado  " +
                     $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
                     $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1";
@@ -128,11 +136,12 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Precio = reader.GetDecimal(6),
                             Estado = reader.GetBoolean(7),
                             PropietarioId = reader.GetInt32(8),
+                            Foto = reader.GetString(9),
                             Propietario = new Propietario
                             {
                                 Id = reader.GetInt32(8),
-                                Nombre = reader.GetString(9),
-                                Apellido = reader.GetString(10),
+                                Nombre = reader.GetString(10),
+                                Apellido = reader.GetString(11),
                             }
                         };
                         res.Add(inmueble);
@@ -149,7 +158,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
+                string sql = $"SELECT inmueble.id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, Foto, " +
                     "propietario.Nombre, propietario.Apellido " +
                     $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
                     $"WHERE inmueble.id = @id AND inmueble.Estado = 1";
@@ -173,11 +182,12 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Longitud = reader.GetDecimal(5),
                             Precio = reader.GetDecimal(6),
                             PropietarioId = reader.GetInt32(7),
+                            Foto = reader.GetString(8),
                             Propietario = new Propietario
                             {
                                 Id = reader.GetInt32(7),
-                                Nombre = reader.GetString(8),
-                                Apellido = reader.GetString(9),
+                                Nombre = reader.GetString(9),
+                                Apellido = reader.GetString(10),
                             }
                         };
                     }
@@ -193,7 +203,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, " +
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, Foto, " +
                     "propietario.Nombre, propietario.Apellido " +
                     $" FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
                     $"WHERE propietario.id = @id AND inmueble.Estado = 1";
@@ -217,11 +227,12 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Longitud = reader.GetDecimal(5),
                             Precio = reader.GetDecimal(6),
                             PropietarioId = reader.GetInt32(7),
+                            Foto = reader.GetString(8),
                             Propietario = new Propietario
                             {
                                 Id = reader.GetInt32(7),
-                                Nombre = reader.GetString(8),
-                                Apellido = reader.GetString(9),
+                                Nombre = reader.GetString(9),
+                                Apellido = reader.GetString(10),
                             }
                         };
                         res.Add(inmueble);
@@ -233,7 +244,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         }
 
         // Dadas dos fechas posibles de un contrato(inicio y fin), listar todos los inmuebles que no estén ocupados en algún contrato entre esas fechas.
-
+        //Falta testeo
         public List<Inmueble> ObtenerInmueblesPorFechas(DateTime fechaDesde, DateTime fechaHasta)
         {
             List<Inmueble> res = new List<Inmueble>();
@@ -241,13 +252,20 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, " +
-                    "propietario.Nombre, propietario.Apellido, propietario.Estado, contrato.FechaHasta, contrato.FechaDesde  " +
+                    $"propietario.Nombre, propietario.Apellido, propietario.Estado " +
                     $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
                     $"INNER JOIN Contratos contrato ON contrato.InmuebleId = inmueble.id " +
                     $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1 AND inmueble.Id " +
                     $"IN " +
-                    $"(SELECT InmuebleId  From Contratos WHERE(FechaDesde > @fechaHasta OR FechaHasta < @fechaDesde))";
-                   
+                    $"(SELECT InmuebleId  From Contratos WHERE(FechaDesde > @fechaHasta OR FechaHasta < @fechaDesde))" +
+                    $"UNION " +
+                    $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, " +
+                    $"propietario.Nombre, propietario.Apellido, propietario.Estado " +
+                    $"FROM Inmuebles inmueble " +
+                    $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id " +
+                    $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1 AND  inmueble.Id " +
+                    $"NOT IN (SELECT InmuebleId FROM Contratos WHERE Estado = 1)";
+
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;

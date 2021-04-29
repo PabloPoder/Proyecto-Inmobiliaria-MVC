@@ -42,7 +42,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.PropietarioId)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Foto)
+            </th>
+            <th>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -72,6 +76,9 @@
                 </td>
                 <td>
                     @(item.Propietario.Nombre + " " + item.Propietario.Apellido)
+                </td>
+                <td>
+                    <img title="@item.Direccion" width="80" src="@item.Foto" />
                 </td>
                 <td>
                     <a asp-action="PorInmueble" asp-controller="Contratos" asp-route-id="@item.Id" title="Contratos">

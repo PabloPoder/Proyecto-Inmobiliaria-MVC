@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,6 +28,9 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public int PropietarioId { get; set; }
         [ForeignKey(nameof(PropietarioId))]
         public Propietario Propietario { get; set; }
+        public string Foto { get; set; }
+        [Display(Name = "Foto")]
+        public IFormFile FotoFile { get; set; }
         public bool Estado { get; set; }
 
     }

@@ -174,9 +174,6 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                         repositorioUsuario.Modificacion(usuario);
                     }
 
-                    
-
-
                     return RedirectToAction(nameof(Index));
 
                 }
