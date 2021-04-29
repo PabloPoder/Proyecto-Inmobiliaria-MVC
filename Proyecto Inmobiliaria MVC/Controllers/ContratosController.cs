@@ -120,7 +120,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             var contrato = repositorioContrato.ObtenerPorId(id);
             ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodosSinContrato();
             return View(contrato);
         }
 
