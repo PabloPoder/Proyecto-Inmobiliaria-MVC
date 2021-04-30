@@ -62,6 +62,21 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
+        public ActionResult ObtenerExpirados()
+        {
+            try
+            {
+                var lista = repositorioContrato.ObtenerContratosExpirados();
+                return View("Index", lista);
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "Ocurrio un error al intentar obtener contrato vigentes.";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
+            }
+        }
+
         public ActionResult PorInmueble(int id)
         {
             try
@@ -186,6 +201,48 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 return View("Index", lista);
             }
         }
+
+        // GET: ContratosController/Renovar/5
+        public ActionResult Renovar(int id, DateTime fechaDesde)
+        {
+            var contrato = repositorioContrato.ObtenerPorId(id);
+            contrato.FechaDesde = fechaDesde;
+            ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            return View(contrato);
+        }
+
+        // POST: ContratosController/Renovar/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Renovar(int id, Contrato contrato)
+        {
+            try
+            {
+                var i = repositorioInmueble.ObtenerUnInmueblePorFechas(contrato.InmuebleId, contrato.FechaDesde, contrato.FechaHasta);
+
+                if (i != null)
+                {
+                    contrato.Id = id;
+                    repositorioContrato.Modificacion(contrato);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.Error = "El inmueble esta ocupado en esas fechas.";
+                    ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+                    ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                    return View("Renovar", contrato);
+                }
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = "Ocurrio un error al intentar editar un contrato.";
+                var lista = repositorioContrato.ObtenerTodos();
+                return View("Index", lista);
+            }
+        }
+
 
         // GET: ContratosController/Delete/5
         [Authorize(Policy = "Administrador")]

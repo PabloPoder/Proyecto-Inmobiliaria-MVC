@@ -1,0 +1,52 @@
+﻿@model Proyecto_Inmobiliaria_MVC.Models.Contrato
+
+@{
+    ViewData["Title"] = "Renovar";
+}
+
+<h1>Renovar</h1>
+
+<h4>Contrato</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Renovar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FechaDesde" class="control-label"></label>
+                <input readonly asp-for="FechaDesde" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" />
+                <span asp-validation-for="FechaDesde" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaHasta" class="control-label"></label>
+                <input asp-for="FechaHasta" class="form-control" />
+                <span asp-validation-for="FechaHasta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Inquilino</label>
+                <select readonly class="form-control" name="InquilinoId">
+                    @foreach (var item in (IList<Inquilino>)ViewBag.Inquilinos)
+                    {
+                        @:<option @(item.Id == Model.InquilinoId ? "selected" : "") value="@item.Id">@(item.Nombre + " " + item.Apellido)</option>
+                    }
+                </select>
+                <span asp-validation-for="InquilinoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Inmueble</label>
+                <select readonly class="form-control" name="InmuebleId">
+                    @foreach (var item in (IList<Inmueble>)ViewBag.Inmuebles)
+                    {
+                        @:<option @(item.Id == Model.InmuebleId ? "selected" : "") value="@item.Id">@(item.Direccion + " " + item.Precio + "$ARS")</option>
+                    }
+                </select>
+                <span asp-validation-for="InmuebleId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Renovar" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-outline-warning">Volver a la Vista</a>
+            </div>
+        </form>
+    </div>
+</div>
+
