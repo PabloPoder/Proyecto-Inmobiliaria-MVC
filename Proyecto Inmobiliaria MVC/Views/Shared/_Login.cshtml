@@ -1,10 +1,21 @@
 ﻿@model Proyecto_Inmobiliaria_MVC.Models.LoginView
 
-
-<h4>Iniciar Sesión:</h4>
+@if (!String.IsNullOrEmpty(@ViewBag.Error))
+{
+    <div class="container">
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>Información:</strong> @ViewBag.Error
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+            </button>
+        </div>
+    </div>
+}
 <hr />
+
+<h4 class="text-center">Iniciar Sesión:</h4>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 mx-auto">
         <form asp-controller="Usuarios" asp-action="Login">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -18,7 +29,7 @@
                 <span asp-validation-for="Clave" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Entrar" class="btn btn-primary" />
+                <input type="submit" value="Entrar" class="btn btn-success" />
             </div>
         </form>
     </div>

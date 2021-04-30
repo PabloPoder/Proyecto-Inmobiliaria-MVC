@@ -114,7 +114,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         public ActionResult Create()
         {
             ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodosSinContrato();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
             return View();
         }
 
@@ -125,8 +125,20 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                repositorioContrato.Alta(contrato);
-                return RedirectToAction(nameof(Index));
+                var i  = repositorioInmueble.ObtenerUnInmueblePorFechas(contrato.InmuebleId, contrato.FechaDesde, contrato.FechaHasta);
+
+                if(i != null)
+                {
+                    repositorioContrato.Alta(contrato);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.Error = "El inmueble esta ocupado en esas fechas.";
+                    ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+                    ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                    return View();
+                }
             }
             catch (SqlException ex)
             {
@@ -140,7 +152,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             var contrato = repositorioContrato.ObtenerPorId(id);
             ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodosSinContrato();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
             return View(contrato);
         }
 
@@ -151,10 +163,21 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         {
             try
             {
-                contrato.Id = id;
-                repositorioContrato.Modificacion(contrato);
+                var i = repositorioInmueble.ObtenerUnInmueblePorFechas(contrato.InmuebleId, contrato.FechaDesde, contrato.FechaHasta);
 
-                return RedirectToAction(nameof(Index));
+                if(i != null) 
+                {
+                    contrato.Id = id;
+                    repositorioContrato.Modificacion(contrato);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.Error = "El inmueble esta ocupado en esas fechas.";
+                    ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+                    ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                    return View("Edit", contrato);
+                }
             }
             catch (SqlException ex)
             {

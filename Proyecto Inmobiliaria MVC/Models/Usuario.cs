@@ -20,11 +20,11 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public int Id{ get; set; }
         [Required]
         public string Nombre { get; set; }
-        [Required]
+        [Required, DataType(DataType.Text), StringLength(16, MinimumLength = 4)]
         public string Apellido { get; set; }
-        [Required, DataType(DataType.EmailAddress)]
+        [Required, DataType(DataType.EmailAddress), StringLength(50, MinimumLength = 8)]
         public string Email { get; set; }
-        [Required, DataType(DataType.Password)]
+        [Required, DataType(DataType.Password), StringLength(16, MinimumLength = 8)]
         public string Clave{ get; set; }
         public string Avatar { get; set; }
         [Display(Name = "Avatar")]

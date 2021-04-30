@@ -149,56 +149,64 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Usuario usuario)
         {
-            
-            if (ModelState.IsValid)
+            var usuarioActual = repositorioUsuario.ObtenerPorEmail(usuario.Email);
+            if(usuarioActual.Email == null)
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    usuario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                             password: usuario.Clave,
-                             salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-                             prf: KeyDerivationPrf.HMACSHA1,
-                             iterationCount: 1000,
-                             numBytesRequested: 256 / 8));
-
-                    usuario.Rol = 3;
-                    int res = repositorioUsuario.Alta(usuario);
-
-                    if (usuario.AvatarFile != null && usuario.Id > 0)
+                    try
                     {
-                        string wwwPath = environment.WebRootPath;
-                        string path = Path.Combine(wwwPath, "Uploads");
-                        if (!Directory.Exists(path))
+                        usuario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                 password: usuario.Clave,
+                                 salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                                 prf: KeyDerivationPrf.HMACSHA1,
+                                 iterationCount: 1000,
+                                 numBytesRequested: 256 / 8));
+
+                        usuario.Rol = 3;
+                        int res = repositorioUsuario.Alta(usuario);
+
+                        if (usuario.AvatarFile != null && usuario.Id > 0)
                         {
-                            Directory.CreateDirectory(path);
+                            string wwwPath = environment.WebRootPath;
+                            string path = Path.Combine(wwwPath, "Uploads");
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                            //Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
+                            string fileName = "avatar_" + usuario.Id + Path.GetExtension(usuario.AvatarFile.FileName);
+                            string pathCompleto = Path.Combine(path, fileName);
+                            usuario.Avatar = Path.Combine("/Uploads", fileName);
+                            using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                            {
+                                usuario.AvatarFile.CopyTo(stream);
+                            }
+                            repositorioUsuario.Modificacion(usuario);
                         }
-                        //Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
-                        string fileName = "avatar_" + usuario.Id + Path.GetExtension(usuario.AvatarFile.FileName);
-                        string pathCompleto = Path.Combine(path, fileName);
-                        usuario.Avatar = Path.Combine("/Uploads", fileName);
-                        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
-                        {
-                            usuario.AvatarFile.CopyTo(stream);
-                        }
-                        repositorioUsuario.Modificacion(usuario);
+
+                        return RedirectToAction(nameof(Index));
+
                     }
-
-                    return RedirectToAction(nameof(Index));
-
+                    catch (Exception ex)
+                    {
+                        TempData["Error"] = "Ocurrio un error al intentar crear un usuario.";
+                        var lista = repositorioUsuario.ObtenerTodos();
+                        return View("Index", lista);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    TempData["Error"] = "Ocurrio un error al intentar crear un usuario.";
-                    var lista = repositorioUsuario.ObtenerTodos();
-                    return View("Index", lista);
+                    TempData["Error"] = "Ocurrio un error al intentar editar el usuario.";
+                    return View();
                 }
             }
             else
             {
-                TempData["Error"] = "Ocurrio un error al intentar editar el usuario.";
+                TempData["Error"] = "Ocurrio un error al intentar crear el usuario.";
                 return View();
             }
-           
+
         }
 
         // GET: UsuarioController/Edit/5

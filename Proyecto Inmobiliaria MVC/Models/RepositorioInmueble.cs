@@ -152,52 +152,6 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return res;
         }
 
-        public List<Inmueble> ObtenerTodosSinContrato()
-        {
-            List<Inmueble> res = new List<Inmueble>();
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, Foto, " +
-                    $"propietario.Nombre, propietario.Apellido, propietario.Estado " +
-                    $"FROM Inmuebles inmueble " +
-                    $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
-                    $"WHERE inmueble.Estado = 1 AND propietario.Estado = 1 AND inmueble.Id NOT IN(SELECT InmuebleId FROM Contratos WHERE Estado = 1)";
-
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    command.CommandType = CommandType.Text;
-                    connection.Open();
-                    var reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        Inmueble inmueble = new Inmueble
-                        {
-                            Id = reader.GetInt32(0),
-                            Direccion = reader.GetString(1),
-                            Ambientes = reader.GetInt32(2),
-                            Superficie = reader.GetInt32(3),
-                            Latitud = reader.GetDecimal(4),
-                            Longitud = reader.GetDecimal(5),
-                            Precio = reader.GetDecimal(6),
-                            Estado = reader.GetBoolean(7),
-                            PropietarioId = reader.GetInt32(8),
-                            Foto = reader.GetString(9),
-                            Propietario = new Propietario
-                            {
-                                Id = reader.GetInt32(8),
-                                Nombre = reader.GetString(10),
-                                Apellido = reader.GetString(11),
-                            }
-                        };
-                        res.Add(inmueble);
-                    }
-                    connection.Close();
-                }
-            }
-            return res;
-        }
 
         public Inmueble ObtenerPorId(int id)
         {
@@ -290,21 +244,22 @@ namespace Proyecto_Inmobiliaria_MVC.Models
             return res;
         }
 
-        // Dadas dos fechas posibles de un contrato(inicio y fin), listar todos los inmuebles que no estén ocupados en algún contrato entre esas fechas.
-        //Falta testeo
-        /*
+
         public List<Inmueble> ObtenerInmueblesPorFechas(DateTime fechaDesde, DateTime fechaHasta)
         {
             List<Inmueble> res = new List<Inmueble>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, inmueble.Estado, PropietarioId, " +
-                    $"propietario.Nombre, propietario.Apellido, propietario.Estado " +
-                    $"FROM Inmuebles inmueble INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.id " +
-                    
-                
-                //MEJORAR CONSULTA SI HAY TIEMPO...
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, Foto, " +
+                    "propietario.Nombre, propietario.Apellido " +
+                     $"FROM Inmuebles inmueble " +
+                     $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id AND propietario.Estado = 1 " +
+                     $"WHERE ( SELECT COUNT(contrato.Id) " +
+                     $"FROM Contratos contrato WHERE contrato.InmuebleId = inmueble.Id AND " +
+                     $"((contrato.FechaDesde BETWEEN @fechaDesde AND @fechaHasta) OR " +
+                     $"(contrato.FechaHasta BETWEEN @fechaDesde AND @fechaHasta) OR " +
+                     $"(contrato.FechaDesde < @fechaDesde AND contrato.FechaHasta > @fechaHasta))) = 0; ";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -325,11 +280,11 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                             Latitud = reader.GetDecimal(4),
                             Longitud = reader.GetDecimal(5),
                             Precio = reader.GetDecimal(6),
-                            Estado = reader.GetBoolean(7),
-                            PropietarioId = reader.GetInt32(8),
+                            PropietarioId = reader.GetInt32(7),
+                            Foto = reader.GetString(8),
                             Propietario = new Propietario
                             {
-                                Id = reader.GetInt32(8),
+                                Id = reader.GetInt32(7),
                                 Nombre = reader.GetString(9),
                                 Apellido = reader.GetString(10),
                             }
@@ -340,8 +295,61 @@ namespace Proyecto_Inmobiliaria_MVC.Models
                 }
             }
             return res;
-        }*/
-        
+        }
+
+
+        public Inmueble ObtenerUnInmueblePorFechas(int id, DateTime fechaDesde, DateTime fechaHasta)
+        {
+            Inmueble inmueble = null;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT inmueble.Id, Direccion, Ambientes, Superficie, Latitud, Longitud, Precio, PropietarioId, Foto, " +
+                    "propietario.Nombre, propietario.Apellido " +
+                     $"FROM Inmuebles inmueble " +
+                     $"INNER JOIN Propietarios propietario ON inmueble.PropietarioId = propietario.Id AND propietario.Estado = 1 " +
+                     $"WHERE inmueble.Id = @id AND ( SELECT COUNT(contrato.Id) " +
+                     $"FROM Contratos contrato WHERE contrato.InmuebleId = inmueble.Id AND " +
+                     $"((contrato.FechaDesde BETWEEN @fechaDesde AND @fechaHasta) OR " +
+                     $"(contrato.FechaHasta BETWEEN @fechaDesde AND @fechaHasta) OR " +
+                     $"(contrato.FechaDesde < @fechaDesde AND contrato.FechaHasta > @fechaHasta))) = 0; ";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@fechaDesde", fechaDesde);
+                    command.Parameters.AddWithValue("@fechaHasta", fechaHasta);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        inmueble = new Inmueble
+                        {
+                            Id = reader.GetInt32(0),
+                            Direccion = reader.GetString(1),
+                            Ambientes = reader.GetInt32(2),
+                            Superficie = reader.GetInt32(3),
+                            Latitud = reader.GetDecimal(4),
+                            Longitud = reader.GetDecimal(5),
+                            Precio = reader.GetDecimal(6),
+                            PropietarioId = reader.GetInt32(7),
+                            Foto = reader.GetString(8),
+                            Propietario = new Propietario
+                            {
+                                Id = reader.GetInt32(7),
+                                Nombre = reader.GetString(9),
+                                Apellido = reader.GetString(10),
+                            }
+                        };
+                    }
+                    connection.Close();
+                }
+            }
+            return inmueble;
+
+        }
 
 
     }

@@ -214,7 +214,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             }
         }
 
-        /* Para implementar
+
         public ActionResult BuscarPorFechas(DateTime fechaDesde, DateTime fechaHasta)
         {
             try
@@ -238,7 +238,7 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
                 return View("Index", lista);
             }
         }
-        */
+        
 
     }
 }
