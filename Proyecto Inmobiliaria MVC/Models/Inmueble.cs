@@ -30,6 +30,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public Propietario Propietario { get; set; }
         public string Foto { get; set; }
         [Display(Name = "Foto")]
+        [NotMapped]
         public IFormFile FotoFile { get; set; }
         public bool Estado { get; set; }
 

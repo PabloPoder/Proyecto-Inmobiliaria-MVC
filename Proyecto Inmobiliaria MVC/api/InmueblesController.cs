@@ -1,22 +1,50 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Proyecto_Inmobiliaria_MVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Proyecto_Inmobiliaria_MVC.api
+namespace Proyecto_Inmobiliaria_MVC.Api
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class InmueblesController : ControllerBase
     {
-        // GET: api/<InmueblesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly DataContext contexto;
+        private readonly IConfiguration config;
+
+        public InmueblesController(DataContext contexto, IConfiguration config)
         {
-            return new string[] { "value1", "value2" };
+            this.contexto = contexto;
+            this.config = config;
+        }
+
+
+        // GET: api/<InmueblesController>
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult> Inmueble(int id)
+        {
+            try
+            {
+                var entidad = contexto.Inmuebles
+                    .Select(x => new { x.Id, x.Ambientes, x.Direccion, x.Superficie, x.Latitud, x.Longitud, x.Precio, x.PropietarioId, x.Foto, x.Estado})
+                    .Single();
+
+                return Ok(entidad);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // GET api/<InmueblesController>/5

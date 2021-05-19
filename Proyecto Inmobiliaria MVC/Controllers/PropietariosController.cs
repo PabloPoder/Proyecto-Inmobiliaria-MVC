@@ -87,6 +87,14 @@ namespace Proyecto_Inmobiliaria_MVC.Controllers
             try
             {
                 propietario.Id = id;
+
+                propietario.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                             password: propietario.Clave,
+                             salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                             prf: KeyDerivationPrf.HMACSHA1,
+                             iterationCount: 1000,
+                             numBytesRequested: 256 / 8));
+
                 repositorioPropietario.Modificacion(propietario);
 
                 return RedirectToAction(nameof(Index));

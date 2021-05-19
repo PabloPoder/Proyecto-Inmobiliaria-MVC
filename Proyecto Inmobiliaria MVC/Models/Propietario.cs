@@ -22,7 +22,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public string Email { get; set; }
         [Required, DataType(DataType.Password)]
         public string Clave { get; set; }
-        public int Estado { get; set; }
+        public bool Estado { get; set; }
 
     }
 }

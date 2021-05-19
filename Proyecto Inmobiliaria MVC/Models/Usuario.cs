@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace Proyecto_Inmobiliaria_MVC.Models
         public string Clave{ get; set; }
         public string Avatar { get; set; }
         [Display(Name = "Avatar")]
+        [NotMapped]
         public IFormFile AvatarFile { get; set; }
         public bool Estado { get; set; }
         public int Rol { get; set; }

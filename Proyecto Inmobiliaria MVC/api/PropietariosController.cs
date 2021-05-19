@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,10 @@ using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Proyecto_Inmobiliaria_MVC.api
+namespace Proyecto_Inmobiliaria_MVC.Api
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class PropietariosController : ControllerBase
     {
@@ -30,18 +32,67 @@ namespace Proyecto_Inmobiliaria_MVC.api
             this.config = config;
         }
 
-        // GET: api/<PropietariosController>
+        // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<Propietario>> Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var usuario = User.Identity.Name;
+
+                return await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == usuario);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
-        // GET api/<PropietariosController>/5
+        // GET: api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            return "value";
+            try
+            {
+                var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Id == id);
+                return entidad != null ? Ok(entidad) : NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        // Get: api/<controller>/GetAll
+        [HttpGet("GetAll")]
+        public async Task<ActionResult> GetAll()
+        {
+            try
+            {
+                return Ok(await contexto.Propietarios.ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        // GET: api/<controller>/5
+        [HttpGet("PropietarioActual")]
+        public async Task<ActionResult> PropietarioActual()
+        {
+            try
+            {
+                var entidad = contexto.Propietarios
+                    .Select(x => new { x.Id, x.Dni, x.Apellido, x.Nombre, x.Email, Contraseña = x.Clave })
+                    .FirstOrDefault();
+
+                return Ok(entidad);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // POST api/<PropietariosController>
@@ -52,14 +103,46 @@ namespace Proyecto_Inmobiliaria_MVC.api
 
         // PUT api/<PropietariosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> Put(int id, [FromForm] Propietario propietario)
         {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    propietario.Id = id;
+                    contexto.Propietarios.Update(propietario);
+                    await contexto.SaveChangesAsync();
+                    return Ok(propietario);
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // DELETE api/<PropietariosController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var p = contexto.Propietarios.Find(id);
+                    if (p == null) return NotFound();
+
+                    contexto.Propietarios.Remove(p);
+                    contexto.SaveChanges();
+                    return Ok(p);
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // POST api/<controller>/login
@@ -76,6 +159,7 @@ namespace Proyecto_Inmobiliaria_MVC.api
                     iterationCount: 1000,
                     numBytesRequested: 256 / 8));
                 var p = await contexto.Propietarios.FirstOrDefaultAsync(x => x.Email == loginView.Usuario);
+
                 if (p == null || p.Clave != hashed)
                 {
                     return BadRequest("Nombre de usuario o clave incorrecta");
