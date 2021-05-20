@@ -83,9 +83,8 @@ namespace Proyecto_Inmobiliaria_MVC.Api
         {
             try
             {
-                var entidad = contexto.Propietarios
-                    .Select(x => new { x.Id, x.Dni, x.Apellido, x.Nombre, x.Email, Contraseña = x.Clave })
-                    .FirstOrDefault();
+                var usuario = User.Identity.Name;
+                var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == usuario);
 
                 return Ok(entidad);
             }

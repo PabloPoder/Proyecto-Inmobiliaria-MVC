@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Proyecto_Inmobiliaria_MVC.Models;
 using System;
@@ -27,19 +28,15 @@ namespace Proyecto_Inmobiliaria_MVC.Api
             this.config = config;
         }
 
-
         // GET: api/<InmueblesController>
-        [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<ActionResult> Inmueble(int id)
+        [HttpGet]
+        public async Task<ActionResult> Inmuebles()
         {
             try
             {
-                var entidad = contexto.Inmuebles
-                    .Select(x => new { x.Id, x.Ambientes, x.Direccion, x.Superficie, x.Latitud, x.Longitud, x.Precio, x.PropietarioId, x.Foto, x.Estado})
-                    .Single();
+                var usuario = User.Identity.Name;
 
-                return Ok(entidad);
+                return Ok(contexto.Inmuebles.Include(x => x.Propietario).Where(x => x.Propietario.Email == usuario));
             }
             catch (Exception ex)
             {
@@ -47,11 +44,20 @@ namespace Proyecto_Inmobiliaria_MVC.Api
             }
         }
 
-        // GET api/<InmueblesController>/5
+        // GET: api/<InmueblesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult> Inmueble(int id)
         {
-            return "value";
+            try
+            {
+                var usuario = User.Identity.Name;
+
+                return Ok(contexto.Inmuebles.Include(x => x.Propietario).Where(x => x.Propietario.Email == usuario).Single( x => x.Id == id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // POST api/<InmueblesController>
