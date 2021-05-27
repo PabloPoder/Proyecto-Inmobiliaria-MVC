@@ -52,7 +52,9 @@ namespace Proyecto_Inmobiliaria_MVC.Api
             {
                 var usuario = User.Identity.Name;
 
-                return Ok(contexto.Inmuebles.Include(x => x.Propietario).Where(x => x.Propietario.Email == usuario).Single( x => x.Id == id));
+                return Ok(contexto.Inmuebles.Include(x => x.Propietario)
+                                            .Where(x => x.Propietario.Email == usuario)
+                                            .Single(x => x.Id == id));
             }
             catch (Exception ex)
             {
@@ -66,10 +68,12 @@ namespace Proyecto_Inmobiliaria_MVC.Api
         {
         }
 
+
         // PUT api/<InmueblesController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+
         }
 
         // DELETE api/<InmueblesController>/5

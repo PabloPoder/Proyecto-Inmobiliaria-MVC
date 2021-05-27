@@ -65,6 +65,7 @@ namespace Proyecto_Inmobiliaria_MVC.Api
 
         // Get: api/<controller>/GetAll
         [HttpGet("GetAll")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetAll()
         {
             try
@@ -102,6 +103,7 @@ namespace Proyecto_Inmobiliaria_MVC.Api
 
         // PUT api/<PropietariosController>/5
         [HttpPut("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult> Put(int id, [FromForm] Propietario propietario)
         {
             try
