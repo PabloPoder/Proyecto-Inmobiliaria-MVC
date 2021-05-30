@@ -89,6 +89,28 @@ namespace Proyecto_Inmobiliaria_MVC.Api
 
         }
 
+        // GET: api/<ContratosController>
+        [HttpGet("ContratoVigentePorInmueble/{id}")]
+        public async Task<ActionResult> ContratoVigentePorInmueble(int id)
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+
+                return Ok(contexto.Contratos.Include(x => x.Inquilino)
+                                            .Include(x => x.Inmueble)
+                                            .ThenInclude(x => x.Propietario)
+                                            .Where(x => x.Inmueble.Propietario.Email == usuario && (x.FechaHasta > DateTime.Now && x.Estado == true) && x.Estado == true)
+                                            .Single());
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+        }
+
         //ContratoDetallado
         // GET api/<ContratosController>/5
         [HttpGet("{id}")]

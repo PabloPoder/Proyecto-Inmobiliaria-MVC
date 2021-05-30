@@ -102,15 +102,27 @@ namespace Proyecto_Inmobiliaria_MVC.Api
         }
 
         // PUT api/<PropietariosController>/5
-        [HttpPut("{id}")]
-        [AllowAnonymous]
-        public async Task<ActionResult> Put(int id, [FromForm] Propietario propietario)
+        [HttpPut("EditarUsuario")]
+        public async Task<ActionResult> Put([FromForm] Propietario propietario)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    propietario.Id = id;
+                    var usuario = User.Identity.Name;
+                    var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == usuario);
+
+
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: propietario.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes(config["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+
+                    propietario.Clave = hashed;
+                    propietario.Email = User.Identity.Name;
+
                     contexto.Propietarios.Update(propietario);
                     await contexto.SaveChangesAsync();
                     return Ok(propietario);
