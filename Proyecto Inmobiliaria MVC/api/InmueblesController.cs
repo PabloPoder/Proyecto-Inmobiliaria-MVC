@@ -70,10 +70,27 @@ namespace Proyecto_Inmobiliaria_MVC.Api
 
 
         // PUT api/<InmueblesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("EditarInmueble/{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody] Inmueble inmueble)
         {
+            try
+            {
+                var usuario = User.Identity.Name;
 
+                if (ModelState.IsValid && contexto.Inmuebles.AsNoTracking().SingleOrDefault(x => x.Id == id && x.Propietario.Email == usuario) != null)
+                {
+                    inmueble.Id = id;
+
+                    contexto.Inmuebles.Update(inmueble);
+                    await contexto.SaveChangesAsync();
+                    return Ok(inmueble);
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // DELETE api/<InmueblesController>/5

@@ -102,16 +102,14 @@ namespace Proyecto_Inmobiliaria_MVC.Api
         }
 
         // PUT api/<PropietariosController>/5
-        [HttpPut("EditarUsuario")]
-        public async Task<ActionResult> Put([FromForm] Propietario propietario)
+        [HttpPut("EditarUsuario/{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody] Propietario propietario)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (ModelState.IsValid && contexto.Propietarios.AsNoTracking().SingleOrDefault(x => x.Id == id && x.Email == User.Identity.Name) != null) 
                 {
-                    var usuario = User.Identity.Name;
-                    var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == usuario);
-
+                    propietario.Id = id;
 
                     string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                         password: propietario.Clave,
@@ -121,7 +119,6 @@ namespace Proyecto_Inmobiliaria_MVC.Api
                         numBytesRequested: 256 / 8));
 
                     propietario.Clave = hashed;
-                    propietario.Email = User.Identity.Name;
 
                     contexto.Propietarios.Update(propietario);
                     await contexto.SaveChangesAsync();
