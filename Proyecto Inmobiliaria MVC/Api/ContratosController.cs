@@ -100,7 +100,7 @@ namespace Proyecto_Inmobiliaria_MVC.Api
                 return Ok(contexto.Contratos.Include(x => x.Inquilino)
                                             .Include(x => x.Inmueble)
                                             .ThenInclude(x => x.Propietario)
-                                            .Where(x => x.Inmueble.Propietario.Email == usuario && (x.FechaHasta > DateTime.Now && x.Estado == true) && x.Estado == true)
+                                            .Where(x => x.Inmueble.Propietario.Email == usuario && x.Inmueble.Id == id && (x.FechaHasta > DateTime.Now && x.Estado == true) && x.Estado == true)
                                             .Single());
 
             }
